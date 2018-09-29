@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d765ee77e8fb4f5d6b5c8ef9fb22a08f33b785b76ac9325ccd759194c6cf939c"
+            "sha256": "44a368eb4f56031d8578a545d283eb8169d00d8894e70a72d8371d8ffb64751b"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -53,6 +53,22 @@
             "index": "pypi",
             "version": "==18.0.1"
         },
+        "click": {
+            "hashes": [
+                "sha256:2335065e6395b9e67ca716de5f7526736bfa6ceead690adf616d925bdc622b13",
+                "sha256:5b94b49521f6456670fdb30cd82a4eca9412788a93fa6dd6df72c94d5a8ff2d7"
+            ],
+            "markers": "python_version >= '2.7' and python_version != '3.2.*' and python_version != '3.0.*' and python_version != '3.1.*' and python_version != '3.3.*'",
+            "version": "==7.0"
+        },
+        "flask": {
+            "hashes": [
+                "sha256:2271c0070dbcb5275fad4a82e29f23ab92682dc45f9dfbc22c02ba9b9322ce48",
+                "sha256:a080b744b7e345ccfcbc77954861cb05b3c63786e93f2b3875e0913d44b43f05"
+            ],
+            "index": "pypi",
+            "version": "==1.0.2"
+        },
         "idna": {
             "hashes": [
                 "sha256:156a6814fb5ac1fc6850fb002e0852d56c0c8d2531923a51032d1b70760e186e",
@@ -60,12 +76,31 @@
             ],
             "version": "==2.7"
         },
+        "itsdangerous": {
+            "hashes": [
+                "sha256:cbb3fcf8d3e33df861709ecaf89d9e6629cff0a217bc2848f1b41cd30d360519"
+            ],
+            "version": "==0.24"
+        },
         "jaraco.functools": {
             "hashes": [
                 "sha256:0cc09711acc0c716a2011a6924c60b2092ac07261aa1822e4277a0f0c5bf0548",
                 "sha256:bad775f06e58bb8de5563bc2a8bf704168919e6779d6e849b1ca58b443e97f3b"
             ],
             "version": "==1.20"
+        },
+        "jinja2": {
+            "hashes": [
+                "sha256:74c935a1b8bb9a3947c50a54766a969d4846290e1e788ea44c1392163723c3bd",
+                "sha256:f84be1bb0040caca4cea721fcbbbbd61f9be9464ca236387158b0feea01914a4"
+            ],
+            "version": "==2.10"
+        },
+        "markupsafe": {
+            "hashes": [
+                "sha256:a6be69091dac236ea9c6bc7d012beab42010fa914c459791d627dad4910eb665"
+            ],
+            "version": "==1.0"
         },
         "more-itertools": {
             "hashes": [
@@ -138,6 +173,13 @@
             ],
             "markers": "python_version >= '2.6' and python_version != '3.0.*' and python_version < '4' and python_version != '3.3.*' and python_version != '3.2.*' and python_version != '3.1.*'",
             "version": "==1.23"
+        },
+        "werkzeug": {
+            "hashes": [
+                "sha256:c3fd7a7d41976d9f44db327260e263132466836cef6f91512889ed60ad26557c",
+                "sha256:d5da73735293558eb1651ee2fddc4d0dedcfa06538b8813a2e20011583c9e49b"
+            ],
+            "version": "==0.14.1"
         },
         "zc.lockfile": {
             "hashes": [
