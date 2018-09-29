@@ -22,7 +22,7 @@ bot = telebot.TeleBot(token)
 def repeat_all_messages(message): # Название функции не играет никакой роли, в принципе
     bot.send_message(message.chat.id, message.text)			
 	
-@server.route('/' + TOKEN, methods=['POST'])
+@server.route('/' + token, methods=['POST'])
 def getMessage():
     bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
     return "!", 200
@@ -31,7 +31,7 @@ def getMessage():
 @server.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url='https://cryptic-citadel-53949.herokuapp.com/' + TOKEN)
+    bot.set_webhook(url='https://cryptic-citadel-53949.herokuapp.com/' + token)
     return "!", 200
 
 
