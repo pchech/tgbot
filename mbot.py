@@ -40,8 +40,8 @@ bot.set_webhook(url=WEBHOOK_URL_BASE + WEBHOOK_URL_PATH)
 				
 cherrypy.config.update({
     'server.socket_host': WEBHOOK_LISTEN,
-    'server.socket_port': WEBHOOK_PORT,
-    'server.ssl_module': 'builtin'
+    'server.socket_port': WEBHOOK_PORT
+    #'server.ssl_module': 'builtin'
 })
 
  # Собственно, запуск!
