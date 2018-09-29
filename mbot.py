@@ -1,9 +1,10 @@
 import telebot
 import cherrypy
+import os
 
 token = '660103023:AAEUiNb-8--UN82OhK7r_8erdy4tsBKC6cM'
 WEBHOOK_HOST = 'cryptic-citadel-53949.herokuapp.com'
-WEBHOOK_PORT = 8443  # 443, 80, 88 или 8443 (порт должен быть открыт!)
+WEBHOOK_PORT = int(os.environ.get('PORT',8443))#8443  # 443, 80, 88 или 8443 (порт должен быть открыт!)
 WEBHOOK_LISTEN = '0.0.0.0'  # На некоторых серверах придется указывать такой же IP, что и выше
 
 WEBHOOK_SSL_CERT = './webhook_cert.pem'  # Путь к сертификату
