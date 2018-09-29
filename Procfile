@@ -1,1 +1,1 @@
-web: python mbot.py
+app: python mbot.py
