@@ -1,1 +1,1 @@
-web: python mbot.py
+web: python mbotF.py
