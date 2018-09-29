@@ -1,8 +1,10 @@
 import telebot
 import cherrypy
+from flask import Flask, request
 import os
 
 token = '660103023:AAEUiNb-8--UN82OhK7r_8erdy4tsBKC6cM'
+server = Flask(__name__)
 WEBHOOK_HOST = 'cryptic-citadel-53949.herokuapp.com'
 WEBHOOK_PORT = 8443#8443  # 443, 80, 88 или 8443 (порт должен быть открыт!)
 WEBHOOK_LISTEN = '0.0.0.0'  # На некоторых серверах придется указывать такой же IP, что и выше
