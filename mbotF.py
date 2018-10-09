@@ -52,8 +52,16 @@ def card_search(message):
         img=img_rsp.content
         bot.send_photo(message.chat.id,img)
     except KeyError:
-        img='Карта не найдена'
-        bot.send_message(message.chat.id,img)
+        url='https://api.scryfall.com/cards/autocomplete'
+        params = {'q': message.text}
+        rsp = requests.get(url=url, params=params)
+        rsp=json.loads(rsp.text)
+        data=rsp['data']
+        if data==['']:
+            rez='Совпадений не найдено'
+        else:
+            rez='\n'.join(data)
+        bot.send_message(message.chat.id,rez)
 	
 @server.route('/' + token, methods=['POST'])
 def getMessage():
