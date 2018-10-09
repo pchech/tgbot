@@ -48,9 +48,12 @@ def card_search(message):
         rsp=requests.get(url=url,params=params)
         rsp=json.loads(rsp.text)
         img_url=rsp['image_uris']['normal']
+        img_rsp=requests.get(url=img_url)
+        img=img_rsp.content
+        bot.send_photo(message.chat.id,img)
     except KeyError:
-        img_url='Карта не найдена'
-    bot.send_message(message.chat.id,img_url)
+        img='Карта не найдена'
+        bot.send_message(message.chat.id,img)
 	
 @server.route('/' + token, methods=['POST'])
 def getMessage():
