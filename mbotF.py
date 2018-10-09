@@ -27,7 +27,11 @@ def change_mod(message):
         change = 0
         bot.send_message(message.chat.id, 'Влючен обычный режим')
 
-@bot.message_handler(func=lambda change: change==0, content_types=["text"])
+def is_change():
+    global change
+    return change == 0
+
+@bot.message_handler(func=is_change, content_types=["text"])
 def repeat_all_messages(message): # Название функции не играет никакой роли, в принципе
     bot.send_message(message.chat.id, message.text[::-1])			
 	
