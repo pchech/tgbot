@@ -16,7 +16,16 @@ WEBHOOK_URL_BASE = "https://%s:%s" % (WEBHOOK_HOST, WEBHOOK_PORT)
 WEBHOOK_URL_PATH = "/%s/" % (token)
 
 bot = telebot.TeleBot(token)
-
+change=0
+@bot.message_handler(commands=['change'])
+def change_mod():
+    global change
+    if change == 0:
+        change = 1
+        bot.send_message(message.chat.id, 'Включен MTG режим')
+    else:
+        change = 0
+        bot.send_message(message.chat.id, 'Влючен обычный режим')
 
 @bot.message_handler(content_types=["text"])
 def repeat_all_messages(message): # Название функции не играет никакой роли, в принципе
