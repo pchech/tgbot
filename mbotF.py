@@ -1,6 +1,8 @@
 import telebot
 import cherrypy
 from flask import Flask, request
+import requests
+import json
 import os
 
 token = os.environ.get('TOKEN')
@@ -27,13 +29,28 @@ def change_mod(message):
         change = 0
         bot.send_message(message.chat.id, 'Включен обычный режим')
 
-def is_change(message):
+def is_normal(message):
     global change
     return change == 0
+def is_mtg(message):
+    global change
+    return change == 1
 
-@bot.message_handler(func=is_change, content_types=["text"])
+@bot.message_handler(func=is_normal, content_types=["text"])
 def repeat_all_messages(message): # Название функции не играет никакой роли, в принципе
-    bot.send_message(message.chat.id, message.text[::-1])			
+    bot.send_message(message.chat.id, message.text[::-1])
+
+@bot.message_handler(func=is_mtg, content_types=["text"])
+def card_search(message):
+    url='https://api.scryfall.com/cards/named'
+    params={'fuzzy':message.text}
+    try:
+        rsp=requests.get(url=url,params=params)
+        rsp=json.loads(rsp.text)
+        img_url=rsp['image_uris']['normal']
+    except KeyError:
+        img_url='Карта не найдена'
+    bot.send_message(message.chat.id,img_url)
 	
 @server.route('/' + token, methods=['POST'])
 def getMessage():
