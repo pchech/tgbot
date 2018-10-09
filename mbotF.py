@@ -25,9 +25,9 @@ def change_mod(message):
         bot.send_message(message.chat.id, 'Включен MTG режим')
     else:
         change = 0
-        bot.send_message(message.chat.id, 'Влючен обычный режим')
+        bot.send_message(message.chat.id, 'Включен обычный режим')
 
-def is_change():
+def is_change(message):
     global change
     return change == 0
 
