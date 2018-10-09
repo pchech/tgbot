@@ -57,7 +57,7 @@ def card_search(message):
         rsp = requests.get(url=url, params=params)
         rsp=json.loads(rsp.text)
         data=rsp['data']
-        if data==['']:
+        if data==[]:
             rez='Совпадений не найдено'
         else:
             rez='\n'.join(data)
