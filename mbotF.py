@@ -18,7 +18,7 @@ WEBHOOK_URL_PATH = "/%s/" % (token)
 bot = telebot.TeleBot(token)
 change=0
 @bot.message_handler(commands=['change'])
-def change_mod():
+def change_mod(message):
     global change
     if change == 0:
         change = 1
