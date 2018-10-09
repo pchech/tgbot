@@ -47,7 +47,7 @@ def card_search(message):
     try:
         rsp=requests.get(url=url,params=params)
         rsp=json.loads(rsp.text)
-        img_url=rsp['image_uris']['normal']
+        img_url=rsp['image_uris']['border_crop']
         img_rsp=requests.get(url=img_url)
         img=img_rsp.content
         bot.send_photo(message.chat.id,img)
