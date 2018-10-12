@@ -58,7 +58,7 @@ def card_search(message):
                 rez+=card['name']+'\n'
             bot.send_message(message.chat.id,rez)
         except KeyError:
-            bot.send_message(message.chat.'Неправильный запрос')
+            bot.send_message(message.chat.id,'Неправильный запрос')
     else:
         url='https://api.scryfall.com/cards/named'
         params={'fuzzy':message.text}
