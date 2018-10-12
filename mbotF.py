@@ -52,10 +52,13 @@ def card_search(message):
         url='https://api.scryfall.com/cards/search'
         rsp=requests.get(url=url,params=params)
         rsp=json.loads(rsp.text)
-        card_list=rsp['data']
-        for card in card_list:
-            rez+=card['name']+'\n'
-        bot.send_message(message.chat.id,rez)
+		try:
+            card_list=rsp['data']
+            for card in card_list:
+                rez+=card['name']+'\n'
+            bot.send_message(message.chat.id,rez)
+        except KeyError:
+            bot.send_message(message.chat.'Неправильный запрос')
     else:
         url='https://api.scryfall.com/cards/named'
         params={'fuzzy':message.text}
