@@ -48,7 +48,7 @@ def card_search(message):
         rez=''
         for arg in list_arg:
             one_arg=arg.split('=')
-            params['q']=params['q']+':'.join(one_arg)+'+'
+            params['q']=params['q']+':'.join(one_arg)+' '
         url='https://api.scryfall.com/cards/search'
         rsp=requests.get(url=url,params=params)
         rsp=json.loads(rsp.text)
