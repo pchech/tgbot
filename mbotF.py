@@ -52,7 +52,7 @@ def card_search(message):
         url='https://api.scryfall.com/cards/search'
         rsp=requests.get(url=url,params=params)
         rsp=json.loads(rsp.text)
-		try:
+        try:
             card_list=rsp['data']
             for card in card_list:
                 rez+=card['name']+'\n'
