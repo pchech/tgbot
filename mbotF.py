@@ -42,12 +42,26 @@ def repeat_all_messages(message): # Название функции не игр�
 
 @bot.message_handler(func=is_mtg, content_types=["text"])
 def card_search(message):
+    if '=' in message.text:
+        list_arg=message.tell.split(' ')
+        params={'q':''}
+        rez=''
+        for arg in list_arg:
+            one_arg=arg.split('=')
+            params['q']=params['q']+':'.join(one_arg)+'+'
+        url='https://api.scryfall.com/cards/search'
+        rsp=requests.get(url=url,params=params)
+        rsp=json.loads(rsp.text)
+        card_list=rsp['data']
+        for card in card_list:
+            rez+=card['name']+'\n'
+        bot.send_message(message.chat.id,rez)
     url='https://api.scryfall.com/cards/named'
     params={'fuzzy':message.text}
     try:
         rsp=requests.get(url=url,params=params)
         rsp=json.loads(rsp.text)
-        img_url=rsp['image_uris']['border_crop']
+        img_url=rsp['image_uris']['normal']
         img_rsp=requests.get(url=img_url)
         img=img_rsp.content
         bot.send_photo(message.chat.id,img)
