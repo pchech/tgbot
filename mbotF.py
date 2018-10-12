@@ -56,26 +56,27 @@ def card_search(message):
         for card in card_list:
             rez+=card['name']+'\n'
         bot.send_message(message.chat.id,rez)
-    url='https://api.scryfall.com/cards/named'
-    params={'fuzzy':message.text}
-    try:
-        rsp=requests.get(url=url,params=params)
-        rsp=json.loads(rsp.text)
-        img_url=rsp['image_uris']['normal']
-        img_rsp=requests.get(url=img_url)
-        img=img_rsp.content
-        bot.send_photo(message.chat.id,img)
-    except KeyError:
-        url='https://api.scryfall.com/cards/autocomplete'
-        params = {'q': message.text}
-        rsp = requests.get(url=url, params=params)
-        rsp=json.loads(rsp.text)
-        data=rsp['data']
-        if data==[]:
-            rez='Совпадений не найдено'
-        else:
-            rez='\n'.join(data)
-        bot.send_message(message.chat.id,rez)
+    else:
+        url='https://api.scryfall.com/cards/named'
+        params={'fuzzy':message.text}
+        try:
+            rsp=requests.get(url=url,params=params)
+            rsp=json.loads(rsp.text)
+            img_url=rsp['image_uris']['normal']
+            img_rsp=requests.get(url=img_url)
+            img=img_rsp.content
+            bot.send_photo(message.chat.id,img)
+        except KeyError:
+            url='https://api.scryfall.com/cards/autocomplete'
+            params = {'q': message.text}
+            rsp = requests.get(url=url, params=params)
+            rsp=json.loads(rsp.text)
+            data=rsp['data']
+            if data==[]:
+                rez='Совпадений не найдено'
+            else:
+                rez='\n'.join(data)
+            bot.send_message(message.chat.id,rez)
 	
 @server.route('/' + token, methods=['POST'])
 def getMessage():
