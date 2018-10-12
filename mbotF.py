@@ -28,7 +28,12 @@ def change_mod(message):
     else:
         change = 0
         bot.send_message(message.chat.id, 'Включен обычный режим')
-
+types=['c','t','o','m','cmc','mana','is','r','e','in','f']
+def validate_type(type):
+    if type in types:
+        return True
+    else:
+        return False
 def is_normal(message):
     global change
     return change == 0
@@ -48,6 +53,9 @@ def card_search(message):
         rez=''
         for arg in list_arg:
             one_arg=arg.split('=')
+            if validate_type(one_arg[0]) is False:
+                bot.send_message(message.chat.id,'Неправильный аргумент')
+                return
             params['q']=params['q']+':'.join(one_arg)+' '
         url='https://api.scryfall.com/cards/search'
         rsp=requests.get(url=url,params=params)
