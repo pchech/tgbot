@@ -43,7 +43,7 @@ def repeat_all_messages(message): # Название функции не игр�
 @bot.message_handler(func=is_mtg, content_types=["text"])
 def card_search(message):
     if '=' in message.text:
-        list_arg=message.tell.split(' ')
+        list_arg=message.text.split(' ')
         params={'q':''}
         rez=''
         for arg in list_arg:
