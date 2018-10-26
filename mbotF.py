@@ -7,7 +7,7 @@ import os
 
 token = os.environ.get('TOKEN')
 server = Flask(__name__)
-WEBHOOK_HOST = 'cryptic-citadel-53949.herokuapp.com'
+WEBHOOK_HOST = 'whispering-spire-58349.herokuapp.com'
 WEBHOOK_PORT = 8443#8443  # 443, 80, 88 или 8443 (порт должен быть открыт!)
 WEBHOOK_LISTEN = '0.0.0.0'  # На некоторых серверах придется указывать такой же IP, что и выше
 
@@ -98,7 +98,7 @@ def getMessage():
 @server.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url='https://cryptic-citadel-53949.herokuapp.com/' + token)
+    bot.set_webhook(url='https://whispering-spire-58349.herokuapp.com/' + token)
     return "!", 200
 
 
