@@ -45,7 +45,7 @@ def is_mtg(message):
 
 def add_parameters(message):
 	global parameters
-	parameters=message.text
+	parameters=int(message.text)
 	msg=bot.send_message(message.chat.id,'Отправьте изображение')
 	bot.register_next_step_handler(msg, make_filter)
 	
@@ -73,7 +73,7 @@ def welcome(message):
 		msg=bot.send_message(message.chat.id,'Укажите параметр')
 		bot.register_next_step_handler(msg, add_parameters)
 	else:
-		msg=bot.send_message(message.chat.id,'Отправьте изображение',reply_markup = markup)
+		msg=bot.send_message(message.chat.id,'Отправьте изображение')
 		bot.register_next_step_handler(msg, make_filter)
 	
 
