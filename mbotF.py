@@ -5,7 +5,7 @@ import requests
 import json
 import os
 import io
-from modules import Filter
+from modules import Filter, Colorizer
 token = os.environ.get('TOKEN')
 server = Flask(__name__)
 WEBHOOK_HOST = 'cryptic-citadel-53949.herokuapp.com'
@@ -21,6 +21,7 @@ WEBHOOK_URL_PATH = "/%s/" % (token)
 bot = telebot.TeleBot(token)
 change=0
 filter = Filter()
+colorizer=Colorizer(os.environ.get('ALGO_KEY'),'MyCollection')
 @bot.message_handler(commands=['change'])
 def change_mod(message):
     global change
@@ -117,7 +118,25 @@ def filter_choice(image_file,parameters):
 	elif fil == 'noise':
 		img=filter.add_noise(image_file,parameters)
 	return img
-	
+
+@bot.message_handler(commands=['colorize'])
+def ask_for_image(message):
+	msg=bot.send_message(message.chat.id,'Отправьте изображение')
+	bot.register_next_step_handler(msg, colorize)
+
+def colorize(message):
+	if message.photo is None:
+		msg=bot.send_message(message.chat.id,'Не изображение')
+		bot.register_next_step_handler(msg, colorize)
+		return
+	else:
+		photo = message.photo[-1].file_id
+		file = bot.get_file(photo)
+		downloaded_file = bot.download_file(file.file_path)
+		image_file = io.BytesIO(downloaded_file)
+		img=colorizer.action(image_file)
+		bot.send_photo(message.chat.id, img)
+		
 @bot.message_handler(func=is_normal, content_types=["text"])
 def repeat_all_messages(message): # Название функции не играет никакой роли, в принципе
     bot.send_message(message.chat.id, message.text[::-1])
