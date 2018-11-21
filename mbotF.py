@@ -51,7 +51,7 @@ def check_photo(message):
 	rsp = requests.get(url)
 	image_file = io.BytesIO(rsp.content)
 	#bot.send_message(message.chat.id,downloaded_file)
-	img=black_white_filter(rsp)
+	img=black_white_filter(image_file)
 	#bot.send_message(message.chat.id,file.file_path)
 	#downloaded_file = bot.download_file(file.file_path)
 	bot.send_photo(message.chat.id, img)
