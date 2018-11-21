@@ -43,7 +43,7 @@ def is_mtg(message):
 
 @bot.message_handler(content_types=['photo'])
 def check_photo(message):
-	photo = message.photo[-1].fileid
+	photo = message.photo[-1].file_id
 	file = bot.get_file(photo)
 	bot.send_message(message.chat.id,photo)
 	bot.send_message(message.chat.id,file.file_path)
