@@ -45,12 +45,13 @@ def is_mtg(message):
 
 def add_parameters(message):
 	global parameters
-	if message.text.isdigit():
+	try:
 		parameters=int(message.text)
 		msg=bot.send_message(message.chat.id,'Отправьте изображение')
 		bot.register_next_step_handler(msg, make_filter)
-	else:
+	except TypeError:
 		msg=bot.send_message(message.chat.id,'Параметр должен быть числовым')
+		bot.register_next_step_handler(msg, add_parameters)
 		return
 	
 @bot.message_handler(commands=['filter'])
@@ -81,12 +82,14 @@ def welcome(message):
 		bot.register_next_step_handler(msg, make_filter)
 	else:
 		bot.send_message(message.chat.id,'Неверный фильтр', reply_markup=markup)
+		bot.register_next_step_handler(msg, welcome)
 		return
 	
 
 def make_filter(message):
 	if message.photo is None:
 		bot.send_message(message.chat.id,'Не изображение')
+		bot.register_next_step_handler(msg, make_filter)
 		return
 	else:
 		photo = message.photo[-1].file_id
@@ -113,9 +116,6 @@ def filter_choice(image_file,parameters):
 		img=filter.brightnessChange(image_file,parameters)
 	elif fil == 'noise':
 		img=filter.add_noise(image_file,parameters)
-	else:
-		bot.send_message(message.chat.id,'Неверный фильтр')
-		return
 	return img
 	
 @bot.message_handler(func=is_normal, content_types=["text"])
