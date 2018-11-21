@@ -44,17 +44,28 @@ def is_mtg(message):
 
 	
 @bot.message_handler(commands=['filter'])
-def welcome(message):
-	msg=bot.send_message(message.chat.id,'Отправьте фото')
-	bot.register_next_step_handler(msg, check_photo)
+def choose_filter(message):
+	markup = types.ReplyKeyboardMarkup(one_time_keyboard = True)
+	itembtn1 = types.KeyboardButton('bw')
+	itembtn2 = types.KeyboardButton('sepia')
+	markup.add(itembtn1, itembtn2)
+	msg=bot.send_message(message.chat.id,'Выберите фильтр', reply_markup = markup)
+	bot.register_next_step_handler(msg, welcome)
 	
-@bot.message_handler(content_types=['photo'])
-def check_photo(message):
+def welcome(message):
+	msg=bot.send_message(message.chat.id,'Отправьте изображение')
+	bot.register_next_step_handler(msg, make_filter)
+	
+
+def make_filter(message):
 	photo = message.photo[-1].file_id
 	file = bot.get_file(photo)
 	downloaded_file = bot.download_file(file.file_path)
 	image_file = io.BytesIO(downloaded_file)
-	img=Filter.black_white_filter(image_file)
+	if message.text == 'bw':
+		img=Filter.black_white_filter(image_file)
+	else:
+		img=Filter.sepia(image_file)
 	imgByteArr = io.BytesIO()
 	img.save(imgByteArr,format = 'PNG')
 	imgByteArr = imgByteArr.getvalue()
