@@ -48,7 +48,7 @@ class Filter:
                 draw.point((i, j), (a, b, c))
         return image
 
-    def negative(self,dir,destinationDir):
+    def negative(self,dir):
         image = Image.open(dir)  # Открываем изображениеH.
         draw = ImageDraw.Draw(image) #Создаем инструмент для рисования.
         width = image.size[0] #Определяем ширину.
@@ -60,14 +60,15 @@ class Filter:
                 b = pix[i, j][1]
                 c = pix[i, j][2]
                 draw.point((i, j), (255 - a, 255 - b, 255 - c))
-        image.save(destinationDir)
+        return image
 
-    def brightnessChange(self,dir,destinationDir,factor):
+    def brightnessChange(self,dir):
         image = Image.open(dir)  # Открываем изображениеH.
         draw = ImageDraw.Draw(image) #Создаем инструмент для рисования.
         width = image.size[0] #Определяем ширину.
         height = image.size[1] #Определяем высоту.
         pix = image.load() #Выгружаем значения пикселей.
+		factor = 40
         for i in range(width):
             for j in range(height):
                 a = pix[i, j][0] + factor
@@ -86,14 +87,15 @@ class Filter:
                 if (c > 255):
                     c = 255
                 draw.point((i, j), (a, b, c))
-        image.save(destinationDir)
+        return image
 
-    def add_noise(self,dir,destinationDir,factor):
+    def add_noise(self,dir):
         image = Image.open(dir)  # Открываем изображениеH.
         draw = ImageDraw.Draw(image) #Создаем инструмент для рисования.
         width = image.size[0] #Определяем ширину.
         height = image.size[1] #Определяем высоту.
         pix = image.load() #Выгружаем значения пикселей.
+		factor = 20
         for i in range(width):
             for j in range(height):
                 rand = random.randint(-factor, factor)
@@ -113,7 +115,7 @@ class Filter:
                 if (c > 255):
                     c = 255
                 draw.point((i, j), (a, b, c))
-        image.save(destinationDir)
+        return image
 
 class Colorizer:
     def __init__(self,api_key,collection_name):

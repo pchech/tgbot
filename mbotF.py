@@ -49,7 +49,11 @@ def choose_filter(message):
 	markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard = True)
 	itembtn1 = telebot.types.KeyboardButton('bw')
 	itembtn2 = telebot.types.KeyboardButton('sepia')
-	markup.add(itembtn1, itembtn2)
+	itembtn3 = telebot.types.KeyboardButton('negative')
+	itembtn4 = telebot.types.KeyboardButton('brightness')
+	itembtn5 = telebot.types.KeyboardButton('noise')
+	markup.row(itembtn1, itembtn2,itembtn3)
+	markup.row(itembtn4, itembtn5)
 	msg=bot.send_message(message.chat.id,'Выберите фильтр', reply_markup = markup)	
 	bot.register_next_step_handler(msg, welcome)
 	
@@ -66,15 +70,27 @@ def make_filter(message):
 	file = bot.get_file(photo)
 	downloaded_file = bot.download_file(file.file_path)
 	image_file = io.BytesIO(downloaded_file)
-	if fil == 'bw':
-		img=filter.black_white_filter(image_file)
-	else:
-		img=filter.sepia(image_file)
+	img=filter_choice(image_file)
 	imgByteArr = io.BytesIO()
 	img.save(imgByteArr,format = 'PNG')
 	imgByteArr = imgByteArr.getvalue()
 	bot.send_photo(message.chat.id, imgByteArr)
-	
+
+def filter_choice(image_file):
+	if fil == 'bw':
+		img=filter.black_white_filter(image_file)
+	elif fil == 'sepia':
+		img=filter.sepia(image_file)
+	elif fil == 'negative':
+		img=filter.negative(image_file)
+	elif fil == 'brightness':
+		img=filter.brightnessChange(image_file)
+	elif fil == 'noise':
+		img=filter.add_noise(image_file)
+	else:
+		bot.send_message(message.chat.id,'Неверный фильтр'
+		return
+	return img
 @bot.message_handler(func=is_normal, content_types=["text"])
 def repeat_all_messages(message): # Название функции не играет никакой роли, в принципе
     bot.send_message(message.chat.id, message.text[::-1])
