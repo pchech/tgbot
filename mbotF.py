@@ -42,21 +42,22 @@ def is_mtg(message):
     global change
     return change == 1
 
+	
+@bot.message_handler(commands=['filter'])
+def welcome(message):
+	msg=bot.send_message('Отправьте фото')
+	bot.register_next_step_handler(msg, check_photo)
+	
 @bot.message_handler(content_types=['photo'])
 def check_photo(message):
 	photo = message.photo[-1].file_id
 	file = bot.get_file(photo)
-	#url = 'https://api.telegram.org/file/bot{}/{}'.format(token,file.file_path)
 	downloaded_file = bot.download_file(file.file_path)
-	#rsp = requests.get(url)
 	image_file = io.BytesIO(downloaded_file)
-	#bot.send_message(message.chat.id,downloaded_file)
 	img=Filter.black_white_filter(image_file)
 	imgByteArr = io.BytesIO()
 	img.save(imgByteArr,format = 'PNG')
 	imgByteArr = imgByteArr.getvalue()
-	#bot.send_message(message.chat.id,file.file_path)
-	#downloaded_file = bot.download_file(file.file_path)
 	bot.send_photo(message.chat.id, imgByteArr)
 	
 @bot.message_handler(func=is_normal, content_types=["text"])
