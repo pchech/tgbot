@@ -8,6 +8,8 @@ cherrypy = "*"
 pytelegrambotapi = "*"
 flask = "*"
 pillow = "*"
+algorithmia = "*"
+pathlib = "*"
 
 [dev-packages]
 
