@@ -23,7 +23,7 @@ def black_white_filter(dir):
         return image
 		
 class Filter:
-    def black_white_filter(self,dir):
+    def black_white_filter(dir):
         image = Image.open(dir) #Открываем изображениеH.
         draw = ImageDraw.Draw(image) #Создаем инструмент для рисования.
         width = image.size[0] #Определяем ширину.
@@ -42,7 +42,7 @@ class Filter:
                     a, b, c = 0, 0, 0
                 draw.point((i, j), (a, b, c))
         return image
-    def sepia(self,dir):
+    def sepia(dir):
         image = Image.open(dir)  # Открываем изображениеH.
         draw = ImageDraw.Draw(image) #Создаем инструмент для рисования.
         width = image.size[0] #Определяем ширину.
