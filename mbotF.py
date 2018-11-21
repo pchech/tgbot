@@ -44,13 +44,13 @@ def is_mtg(message):
     return change == 1
 
 def add_parameters(message):
+	global parameters
 	parameters=message.text
 	msg=bot.send_message(message.chat.id,'Отправьте изображение')
 	bot.register_next_step_handler(msg, make_filter)
 	
 @bot.message_handler(commands=['filter'])
 def choose_filter(message):
-	global parameters
 	markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard = True)
 	itembtn1 = telebot.types.KeyboardButton('bw')
 	itembtn2 = telebot.types.KeyboardButton('sepia')
