@@ -54,7 +54,7 @@ def choose_filter(message):
 	bot.register_next_step_handler(msg, welcome)
 	
 def welcome(message):
-	markup = types.ReplyKeyboardRemove(selective=False)
+	markup = telebot.types.ReplyKeyboardRemove(selective=False)
 	msg=bot.send_message(message.chat.id,'Отправьте изображение',reply_markup = markup)
 	bot.register_next_step_handler(msg, make_filter)
 	
