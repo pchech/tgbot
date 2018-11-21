@@ -45,9 +45,13 @@ def is_mtg(message):
 
 def add_parameters(message):
 	global parameters
-	parameters=int(message.text)
-	msg=bot.send_message(message.chat.id,'Отправьте изображение')
-	bot.register_next_step_handler(msg, make_filter)
+	if message.text.isdigit():
+		parameters=int(message.text)
+		msg=bot.send_message(message.chat.id,'Отправьте изображение')
+		bot.register_next_step_handler(msg, make_filter)
+	else:
+		msg=bot.send_message(message.chat.id,'Параметр должен быть числовым')
+		return
 	
 @bot.message_handler(commands=['filter'])
 def choose_filter(message):
@@ -67,29 +71,36 @@ def welcome(message):
 	fil=message.text
 	markup = telebot.types.ReplyKeyboardRemove(selective=False)
 	if fil == 'sepia':
-		msg=bot.send_message(message.chat.id,'Укажите глубину')
+		msg=bot.send_message(message.chat.id,'Укажите глубину', reply_markup=markup)
 		bot.register_next_step_handler(msg, add_parameters)
 	elif fil in ('brightness','noise'):
-		msg=bot.send_message(message.chat.id,'Укажите параметр')
+		msg=bot.send_message(message.chat.id,'Укажите параметр', reply_markup=markup)
 		bot.register_next_step_handler(msg, add_parameters)
-	else:
-		msg=bot.send_message(message.chat.id,'Отправьте изображение')
+	elif fil in ('bw','negative'):
+		msg=bot.send_message(message.chat.id,'Отправьте изображение', reply_markup=markup)
 		bot.register_next_step_handler(msg, make_filter)
+	else:
+		bot.send_message(message.chat.id,'Неверный фильтр', reply_markup=markup)
+		return
 	
 
 def make_filter(message):
-	photo = message.photo[-1].file_id
-	file = bot.get_file(photo)
-	downloaded_file = bot.download_file(file.file_path)
-	image_file = io.BytesIO(downloaded_file)
-	if fil in ('brightness','noise','sepia'):	
-		img=filter_choice(image_file,parameters)
+	if message.photo is None:
+		bot.send_message(message.chat.id,'Не изображение')
+		return
 	else:
-		img=filter_choice(image_file,None)
-	imgByteArr = io.BytesIO()
-	img.save(imgByteArr,format = 'PNG')
-	imgByteArr = imgByteArr.getvalue()
-	bot.send_photo(message.chat.id, imgByteArr)
+		photo = message.photo[-1].file_id
+		file = bot.get_file(photo)
+		downloaded_file = bot.download_file(file.file_path)
+		image_file = io.BytesIO(downloaded_file)
+		if fil in ('brightness','noise','sepia'):	
+			img=filter_choice(image_file,parameters)
+		else:
+			img=filter_choice(image_file,None)
+		imgByteArr = io.BytesIO()
+		img.save(imgByteArr,format = 'PNG')
+		imgByteArr = imgByteArr.getvalue()
+		bot.send_photo(message.chat.id, imgByteArr)
 
 def filter_choice(image_file,parameters):
 	if fil == 'bw':
