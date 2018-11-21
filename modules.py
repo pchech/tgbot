@@ -68,7 +68,7 @@ class Filter:
         width = image.size[0] #Определяем ширину.
         height = image.size[1] #Определяем высоту.
         pix = image.load() #Выгружаем значения пикселей.
-		factor = 40
+        factor = 40
         for i in range(width):
             for j in range(height):
                 a = pix[i, j][0] + factor
@@ -95,7 +95,7 @@ class Filter:
         width = image.size[0] #Определяем ширину.
         height = image.size[1] #Определяем высоту.
         pix = image.load() #Выгружаем значения пикселей.
-		factor = 20
+        factor = 20
         for i in range(width):
             for j in range(height):
                 rand = random.randint(-factor, factor)
