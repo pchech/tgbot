@@ -43,9 +43,13 @@ def is_mtg(message):
     global change
     return change == 1
 
-	
+def add_parameters(message):
+	parameters=message.text
+	msg=bot.send_message(message.chat.id,'Отправьте изображение',reply_markup = markup)
+	bot.register_next_step_handler(msg, make_filter)
 @bot.message_handler(commands=['filter'])
 def choose_filter(message):
+	global parameters
 	markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard = True)
 	itembtn1 = telebot.types.KeyboardButton('bw')
 	itembtn2 = telebot.types.KeyboardButton('sepia')
@@ -61,8 +65,15 @@ def welcome(message):
 	global fil
 	fil=message.text
 	markup = telebot.types.ReplyKeyboardRemove(selective=False)
-	msg=bot.send_message(message.chat.id,'Отправьте изображение',reply_markup = markup)
-	bot.register_next_step_handler(msg, make_filter)
+	if fil == 'sepia':
+		msg=bot.send_message(message.chat.id,'Укажите глубину')
+		bot.register_next_step_handler(msg, add_parameters)
+	elif fil in ('brightness','noise'):
+		msg=bot.send_message(message.chat.id,'Укажите параметр')
+		bot.register_next_step_handler(msg, add_parameters)
+	else:
+		msg=bot.send_message(message.chat.id,'Отправьте изображение',reply_markup = markup)
+		bot.register_next_step_handler(msg, make_filter)
 	
 
 def make_filter(message):
@@ -70,27 +81,28 @@ def make_filter(message):
 	file = bot.get_file(photo)
 	downloaded_file = bot.download_file(file.file_path)
 	image_file = io.BytesIO(downloaded_file)
-	img=filter_choice(image_file)
+	img=filter_choice(image_file,parameters)
 	imgByteArr = io.BytesIO()
 	img.save(imgByteArr,format = 'PNG')
 	imgByteArr = imgByteArr.getvalue()
 	bot.send_photo(message.chat.id, imgByteArr)
 
-def filter_choice(image_file):
+def filter_choice(image_file,parameters):
 	if fil == 'bw':
 		img=filter.black_white_filter(image_file)
 	elif fil == 'sepia':
-		img=filter.sepia(image_file)
+		img=filter.sepia(image_file,parameters)
 	elif fil == 'negative':
 		img=filter.negative(image_file)
 	elif fil == 'brightness':
-		img=filter.brightnessChange(image_file)
+		img=filter.brightnessChange(image_file,parameters)
 	elif fil == 'noise':
-		img=filter.add_noise(image_file)
+		img=filter.add_noise(image_file,parameters)
 	else:
 		bot.send_message(message.chat.id,'Неверный фильтр')
 		return
 	return img
+	
 @bot.message_handler(func=is_normal, content_types=["text"])
 def repeat_all_messages(message): # Название функции не играет никакой роли, в принципе
     bot.send_message(message.chat.id, message.text[::-1])

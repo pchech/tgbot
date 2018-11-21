@@ -23,13 +23,13 @@ class Filter:
                     a, b, c = 0, 0, 0
                 draw.point((i, j), (a, b, c))
         return image
-    def sepia(self,dir):
+    def sepia(self,dir,parameters):
         image = Image.open(dir)  # Открываем изображениеH.
         draw = ImageDraw.Draw(image) #Создаем инструмент для рисования.
         width = image.size[0] #Определяем ширину.
         height = image.size[1] #Определяем высоту.
         pix = image.load() #Выгружаем значения пикселей.
-        depth = 2
+        depth = parameters
         for i in range(width):
             for j in range(height):
                 a = pix[i, j][0]
@@ -62,13 +62,13 @@ class Filter:
                 draw.point((i, j), (255 - a, 255 - b, 255 - c))
         return image
 
-    def brightnessChange(self,dir):
+    def brightnessChange(self,dir,parameters):
         image = Image.open(dir)  # Открываем изображениеH.
         draw = ImageDraw.Draw(image) #Создаем инструмент для рисования.
         width = image.size[0] #Определяем ширину.
         height = image.size[1] #Определяем высоту.
         pix = image.load() #Выгружаем значения пикселей.
-        factor = 40
+        factor = parameters
         for i in range(width):
             for j in range(height):
                 a = pix[i, j][0] + factor
@@ -89,13 +89,13 @@ class Filter:
                 draw.point((i, j), (a, b, c))
         return image
 
-    def add_noise(self,dir):
+    def add_noise(self,dir,parameters):
         image = Image.open(dir)  # Открываем изображениеH.
         draw = ImageDraw.Draw(image) #Создаем инструмент для рисования.
         width = image.size[0] #Определяем ширину.
         height = image.size[1] #Определяем высоту.
         pix = image.load() #Выгружаем значения пикселей.
-        factor = 20
+        factor = parameters
         for i in range(width):
             for j in range(height):
                 rand = random.randint(-factor, factor)
