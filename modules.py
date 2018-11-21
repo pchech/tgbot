@@ -23,13 +23,13 @@ def black_white_filter(dir):
         return image
 		
 class Filter:
-    def black_white_filter(self,dir,destinationDir):
+    def black_white_filter(dir):
         image = Image.open(dir) #Открываем изображениеH.
         draw = ImageDraw.Draw(image) #Создаем инструмент для рисования.
         width = image.size[0] #Определяем ширину.
         height = image.size[1] #Определяем высоту.
         pix = image.load() #Выгружаем значения пикселей.
-        factor = int(input('factor:'))
+        factor = 1
         for i in range(width):
             for j in range(height):
                 a = pix[i, j][0]
@@ -41,7 +41,7 @@ class Filter:
                 else:
                     a, b, c = 0, 0, 0
                 draw.point((i, j), (a, b, c))
-        image.save(destinationDir)
+        return image
     def sepia(self,dir,destinationDir,depth):
         image = Image.open(dir)  # Открываем изображениеH.
         draw = ImageDraw.Draw(image) #Создаем инструмент для рисования.

@@ -5,7 +5,7 @@ import requests
 import json
 import os
 import io
-from modules import black_white_filter
+from modules import Filter
 token = os.environ.get('TOKEN')
 server = Flask(__name__)
 WEBHOOK_HOST = 'cryptic-citadel-53949.herokuapp.com'
@@ -51,7 +51,7 @@ def check_photo(message):
 	#rsp = requests.get(url)
 	image_file = io.BytesIO(downloaded_file)
 	#bot.send_message(message.chat.id,downloaded_file)
-	img=black_white_filter(image_file)
+	img=Filter.black_white_filter(image_file)
 	imgByteArr = io.BytesIO()
 	img.save(imgByteArr,format = 'PNG')
 	imgByteArr = imgByteArr.getvalue()
