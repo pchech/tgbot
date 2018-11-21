@@ -45,7 +45,7 @@ def is_mtg(message):
 	
 @bot.message_handler(commands=['filter'])
 def welcome(message):
-	msg=bot.send_message('Отправьте фото')
+	msg=bot.send_message(message.chat.id,'Отправьте фото')
 	bot.register_next_step_handler(msg, check_photo)
 	
 @bot.message_handler(content_types=['photo'])
