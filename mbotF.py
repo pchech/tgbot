@@ -50,12 +50,12 @@ def choose_filter(message):
 	itembtn1 = telebot.types.KeyboardButton('bw')
 	itembtn2 = telebot.types.KeyboardButton('sepia')
 	markup.add(itembtn1, itembtn2)
-	msg=bot.send_message(message.chat.id,'Выберите фильтр', reply_markup = markup)
-	global fil
-	fil=msg.text
+	msg=bot.send_message(message.chat.id,'Выберите фильтр', reply_markup = markup)	
 	bot.register_next_step_handler(msg, welcome)
 	
 def welcome(message):
+	global fil
+	fil=message.text
 	markup = telebot.types.ReplyKeyboardRemove(selective=False)
 	msg=bot.send_message(message.chat.id,'Отправьте изображение',reply_markup = markup)
 	bot.register_next_step_handler(msg, make_filter)
