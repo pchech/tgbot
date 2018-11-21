@@ -45,8 +45,9 @@ def is_mtg(message):
 
 def add_parameters(message):
 	parameters=message.text
-	msg=bot.send_message(message.chat.id,'Отправьте изображение',reply_markup = markup)
+	msg=bot.send_message(message.chat.id,'Отправьте изображение')
 	bot.register_next_step_handler(msg, make_filter)
+	
 @bot.message_handler(commands=['filter'])
 def choose_filter(message):
 	global parameters
@@ -81,10 +82,10 @@ def make_filter(message):
 	file = bot.get_file(photo)
 	downloaded_file = bot.download_file(file.file_path)
 	image_file = io.BytesIO(downloaded_file)
-	if parameters is None:	
-		img=filter_choice(image_file,None)
-	else:
+	if fil in ('brightness','noise','sepia'):	
 		img=filter_choice(image_file,parameters)
+	else:
+		img=filter_choice(image_file,None)
 	imgByteArr = io.BytesIO()
 	img.save(imgByteArr,format = 'PNG')
 	imgByteArr = imgByteArr.getvalue()
