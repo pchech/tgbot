@@ -88,7 +88,7 @@ def filter_choice(image_file):
 	elif fil == 'noise':
 		img=filter.add_noise(image_file)
 	else:
-		bot.send_message(message.chat.id,'Неверный фильтр'
+		bot.send_message(message.chat.id,'Неверный фильтр')
 		return
 	return img
 @bot.message_handler(func=is_normal, content_types=["text"])
