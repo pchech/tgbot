@@ -81,7 +81,10 @@ def make_filter(message):
 	file = bot.get_file(photo)
 	downloaded_file = bot.download_file(file.file_path)
 	image_file = io.BytesIO(downloaded_file)
-	img=filter_choice(image_file,parameters)
+	if parameters is None:	
+		img=filter_choice(image_file)
+	else:
+		img=filter_choice(image_file,parameters)
 	imgByteArr = io.BytesIO()
 	img.save(imgByteArr,format = 'PNG')
 	imgByteArr = imgByteArr.getvalue()
