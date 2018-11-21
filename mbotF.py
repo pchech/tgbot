@@ -81,14 +81,14 @@ def welcome(message):
 		msg=bot.send_message(message.chat.id,'Отправьте изображение', reply_markup=markup)
 		bot.register_next_step_handler(msg, make_filter)
 	else:
-		bot.send_message(message.chat.id,'Неверный фильтр')
+		msg=bot.send_message(message.chat.id,'Неверный фильтр')
 		bot.register_next_step_handler(msg, welcome)
 		return
 	
 
 def make_filter(message):
 	if message.photo is None:
-		bot.send_message(message.chat.id,'Не изображение')
+		msg=bot.send_message(message.chat.id,'Не изображение')
 		bot.register_next_step_handler(msg, make_filter)
 		return
 	else:
