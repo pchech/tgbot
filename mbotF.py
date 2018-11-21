@@ -20,6 +20,7 @@ WEBHOOK_URL_PATH = "/%s/" % (token)
 
 bot = telebot.TeleBot(token)
 change=0
+filter = Filter()
 @bot.message_handler(commands=['change'])
 def change_mod(message):
     global change
@@ -53,7 +54,8 @@ def choose_filter(message):
 	bot.register_next_step_handler(msg, welcome)
 	
 def welcome(message):
-	msg=bot.send_message(message.chat.id,'Отправьте изображение')
+	markup = types.ReplyKeyboardRemove(selective=False)
+	msg=bot.send_message(message.chat.id,'Отправьте изображение',reply_markup = markup)
 	bot.register_next_step_handler(msg, make_filter)
 	
 
@@ -63,9 +65,9 @@ def make_filter(message):
 	downloaded_file = bot.download_file(file.file_path)
 	image_file = io.BytesIO(downloaded_file)
 	if message.text == 'bw':
-		img=Filter.black_white_filter(image_file)
+		img=filter.black_white_filter(image_file)
 	else:
-		img=Filter.sepia(image_file)
+		img=filter.sepia(image_file)
 	imgByteArr = io.BytesIO()
 	img.save(imgByteArr,format = 'PNG')
 	imgByteArr = imgByteArr.getvalue()
