@@ -4,6 +4,7 @@ from flask import Flask, request
 import requests
 import json
 import os
+import io
 from modules import black_white_filter
 token = os.environ.get('TOKEN')
 server = Flask(__name__)
@@ -47,8 +48,10 @@ def check_photo(message):
 	file = bot.get_file(photo)
 	url = 'https://api.telegram.org/file/bot{}/{}'.format(token,file.file_path)
 	downloaded_file = bot.download_file(file.file_path)
-	img=black_white_filter(downloaded_file)
-	#bot.send_message(message.chat.id,photo)
+	rsp = requests.get(url)
+	image_file = io.BytesIO(rsp.content)
+	bot.send_message(message.chat.id,downloaded_file)
+	img=black_white_filter(rsp)
 	#bot.send_message(message.chat.id,file.file_path)
 	#downloaded_file = bot.download_file(file.file_path)
 	bot.send_photo(message.chat.id, img)
