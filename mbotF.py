@@ -48,6 +48,7 @@ def check_photo(message):
 	bot.send_message(message.chat.id,photo)
 	bot.send_message(message.chat.id,file.file_path)
 	url = 'https://api.telegram.org/file/bot{}/{}'.format(token,file.file_path)
+	bot.send_message(message.chat.id, url)
 	bot.send_photo(message.chat.id, url)
 	
 @bot.message_handler(func=is_normal, content_types=["text"])
