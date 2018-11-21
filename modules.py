@@ -48,7 +48,7 @@ class Filter:
         width = image.size[0] #Определяем ширину.
         height = image.size[1] #Определяем высоту.
         pix = image.load() #Выгружаем значения пикселей.
-		depth = 2
+        depth = 2
         for i in range(width):
             for j in range(height):
                 a = pix[i, j][0]
