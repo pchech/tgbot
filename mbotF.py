@@ -29,9 +29,9 @@ def change_mod(message):
     else:
         change = 0
         bot.send_message(message.chat.id, 'Включен обычный режим')
-types=['c','t','o','m','cmc','mana','is','r','e','in','f']
+c_types=['c','t','o','m','cmc','mana','is','r','e','in','f']
 def validate_type(type):
-    if type in types:
+    if type in c_types:
         return True
     else:
         return False
@@ -45,9 +45,9 @@ def is_mtg(message):
 	
 @bot.message_handler(commands=['filter'])
 def choose_filter(message):
-	markup = types.ReplyKeyboardMarkup(one_time_keyboard = True)
-	itembtn1 = types.KeyboardButton('bw')
-	itembtn2 = types.KeyboardButton('sepia')
+	markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard = True)
+	itembtn1 = telebot.types.KeyboardButton('bw')
+	itembtn2 = telebot.types.KeyboardButton('sepia')
 	markup.add(itembtn1, itembtn2)
 	msg=bot.send_message(message.chat.id,'Выберите фильтр', reply_markup = markup)
 	bot.register_next_step_handler(msg, welcome)
