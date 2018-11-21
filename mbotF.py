@@ -47,10 +47,10 @@ def check_photo(message):
 	photo = message.photo[-1].file_id
 	file = bot.get_file(photo)
 	url = 'https://api.telegram.org/file/bot{}/{}'.format(token,file.file_path)
-	downloaded_file = bot.download_file(file.file_path)
+	#downloaded_file = bot.download_file(file.file_path)
 	rsp = requests.get(url)
 	image_file = io.BytesIO(rsp.content)
-	bot.send_message(message.chat.id,downloaded_file)
+	#bot.send_message(message.chat.id,downloaded_file)
 	img=black_white_filter(rsp)
 	#bot.send_message(message.chat.id,file.file_path)
 	#downloaded_file = bot.download_file(file.file_path)
