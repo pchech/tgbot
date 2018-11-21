@@ -4,7 +4,7 @@ from flask import Flask, request
 import requests
 import json
 import os
-
+from modules import black_white_filter
 token = os.environ.get('TOKEN')
 server = Flask(__name__)
 WEBHOOK_HOST = 'cryptic-citadel-53949.herokuapp.com'
@@ -45,10 +45,13 @@ def is_mtg(message):
 def check_photo(message):
 	photo = message.photo[-1].file_id
 	file = bot.get_file(photo)
-	bot.send_message(message.chat.id,photo)
-	bot.send_message(message.chat.id,file.file_path)
+	url = 'https://api.telegram.org/file/bot{}/{}'.format(token,file.file_path)
 	downloaded_file = bot.download_file(file.file_path)
-	bot.send_photo(message.chat.id, downloaded_file)
+	img=black_white_filter(downloaded_file)
+	#bot.send_message(message.chat.id,photo)
+	#bot.send_message(message.chat.id,file.file_path)
+	#downloaded_file = bot.download_file(file.file_path)
+	bot.send_photo(message.chat.id, img)
 	
 @bot.message_handler(func=is_normal, content_types=["text"])
 def repeat_all_messages(message): # Название функции не играет никакой роли, в принципе
