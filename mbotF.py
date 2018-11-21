@@ -47,7 +47,8 @@ def check_photo(message):
 	file = bot.get_file(photo)
 	bot.send_message(message.chat.id,photo)
 	bot.send_message(message.chat.id,file.file_path)
-	bot.send_photo(message.chat.id, file.file_path)
+	url = 'https://api.telegram.org/file/bot{}/{}'.format(token,file.file_path)
+	bot.send_photo(message.chat.id, url)
 	
 @bot.message_handler(func=is_normal, content_types=["text"])
 def repeat_all_messages(message): # Название функции не играет никакой роли, в принципе
