@@ -51,6 +51,8 @@ def choose_filter(message):
 	itembtn2 = telebot.types.KeyboardButton('sepia')
 	markup.add(itembtn1, itembtn2)
 	msg=bot.send_message(message.chat.id,'Выберите фильтр', reply_markup = markup)
+	global fil
+	fil=msg.text
 	bot.register_next_step_handler(msg, welcome)
 	
 def welcome(message):
@@ -64,7 +66,7 @@ def make_filter(message):
 	file = bot.get_file(photo)
 	downloaded_file = bot.download_file(file.file_path)
 	image_file = io.BytesIO(downloaded_file)
-	if message.text == 'bw':
+	if fil == 'bw':
 		img=filter.black_white_filter(image_file)
 	else:
 		img=filter.sepia(image_file)
