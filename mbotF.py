@@ -49,7 +49,7 @@ def add_parameters(message):
 		parameters=int(message.text)
 		msg=bot.send_message(message.chat.id,'Отправьте изображение')
 		bot.register_next_step_handler(msg, make_filter)
-	except TypeError:
+	except ValueError:
 		msg=bot.send_message(message.chat.id,'Параметр должен быть числовым')
 		bot.register_next_step_handler(msg, add_parameters)
 		return
@@ -81,7 +81,7 @@ def welcome(message):
 		msg=bot.send_message(message.chat.id,'Отправьте изображение', reply_markup=markup)
 		bot.register_next_step_handler(msg, make_filter)
 	else:
-		bot.send_message(message.chat.id,'Неверный фильтр', reply_markup=markup)
+		bot.send_message(message.chat.id,'Неверный фильтр')
 		bot.register_next_step_handler(msg, welcome)
 		return
 	
