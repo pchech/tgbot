@@ -179,8 +179,25 @@ def ask_for_image_clust(message):
 	markup_cancel = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True)
 	cancel = telebot.types.KeyboardButton('stop')
 	markup_cancel.row(cancel)
-	msg=bot.send_message(message.chat.id,'Отправьте изображение',reply_markup = markup_cancel)
-	bot.register_next_step_handler(msg, clusterization)
+	msg=bot.send_message(message.chat.id,'Выберите число цветов (не более 10)',reply_markup = markup_cancel)
+	bot.register_next_step_handler(msg, ask_for_color)
+
+def ask_for_color(message):
+	if validate_stop(message):
+		return
+	try:
+		parameters=int(message.text)
+		if parameters > 10:
+			msg=bot.send_message(message.chat.id,'Не больше 10 цветов')
+			bot.register_next_step_handler(msg, ask_for_color)
+			return
+		msg=bot.send_message(message.chat.id,'Отправьте изображение')
+		bot.register_next_step_handler(msg, clusterization)
+	except ValueError:
+		msg=bot.send_message(message.chat.id,'Параметр должен быть числовым')
+		bot.register_next_step_handler(msg, ask_for_color)
+		return
+
 	
 def clusterization(message):
 	if validate_stop(message):
