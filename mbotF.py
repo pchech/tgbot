@@ -186,6 +186,7 @@ def ask_for_color(message):
 	if validate_stop(message):
 		return
 	try:
+		global parameters
 		parameters=int(message.text)
 		if parameters > 10:
 			msg=bot.send_message(message.chat.id,'Не больше 10 цветов')
