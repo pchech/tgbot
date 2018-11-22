@@ -10,6 +10,8 @@ flask = "*"
 pillow = "*"
 algorithmia = "*"
 pathlib = "*"
+scikit-learn = "*"
+scikit-image = "*"
 
 [dev-packages]
 

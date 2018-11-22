@@ -5,7 +5,7 @@ import requests
 import json
 import os
 import io
-from modules import Filter, Colorizer
+from modules import Filter, Colorizer, change_color
 token = os.environ.get('TOKEN')
 server = Flask(__name__)
 WEBHOOK_HOST = 'cryptic-citadel-53949.herokuapp.com'
@@ -26,6 +26,7 @@ welcome_message="""Бот обладает следующими возможно
 /filter - Применить один из 5 фильтров (черно-белое фото, сепия, негатив, наложение шума, изменение яркости)
 /colorize - Окраска черно-белых изображений"""
 
+c_types=['c','t','o','m','cmc','mana','is','r','e','in','f']
 @bot.message_handler(commands=['change'])
 def change_mod(message):
     global change
@@ -35,12 +36,13 @@ def change_mod(message):
     else:
         change = 0
         bot.send_message(message.chat.id, 'Включен обычный режим')
-c_types=['c','t','o','m','cmc','mana','is','r','e','in','f']
+
 def validate_type(type):
     if type in c_types:
         return True
     else:
         return False
+		
 def is_normal(message):
     global change
     return change == 0
@@ -48,21 +50,6 @@ def is_mtg(message):
     global change
     return change == 1
 
-def add_parameters(message):
-	if validate_stop(message):
-		return
-	global parameters
-	try:
-		parameters=int(message.text)
-		if fil == 'noise':
-			parameters=abs(parameters)
-		msg=bot.send_message(message.chat.id,'Отправьте изображение')
-		bot.register_next_step_handler(msg, make_filter)
-	except ValueError:
-		msg=bot.send_message(message.chat.id,'Параметр должен быть числовым')
-		bot.register_next_step_handler(msg, add_parameters)
-		return
-	
 def validate_stop(message):
 		if message.text == 'stop':
 			markup = telebot.types.ReplyKeyboardRemove(selective=False)
@@ -105,7 +92,21 @@ def welcome(message):
 		msg=bot.send_message(message.chat.id,'Неверный фильтр')
 		bot.register_next_step_handler(msg, welcome)
 		return
-	
+
+def add_parameters(message):
+	if validate_stop(message):
+		return
+	global parameters
+	try:
+		parameters=int(message.text)
+		if fil == 'noise':
+			parameters=abs(parameters)
+		msg=bot.send_message(message.chat.id,'Отправьте изображение')
+		bot.register_next_step_handler(msg, make_filter)
+	except ValueError:
+		msg=bot.send_message(message.chat.id,'Параметр должен быть числовым')
+		bot.register_next_step_handler(msg, add_parameters)
+		return
 
 def make_filter(message):
 	if validate_stop(message):
@@ -165,9 +166,42 @@ def colorize(message):
 		markup = telebot.types.ReplyKeyboardRemove(selective=False)
 		photo = message.photo[-1].file_id
 		file = bot.get_file(photo)
-		downloaded_file = bot.download_file(file.file_path)
-		img=colorizer.action(downloaded_file)
-		bot.send_photo(message.chat.id, img, reply_markup=markup)
+		if file.file_size > 10485760:
+			msg=bot.send_message(message.chat.id,'Файл не должен быть больше 10 МБ')
+			bot.register_next_step_handler(msg, colorize)
+		else:
+			downloaded_file = bot.download_file(file.file_path)
+			img=colorizer.action(downloaded_file)
+			bot.send_photo(message.chat.id, img, reply_markup=markup)
+			
+@bot.message_handler(commands=['change_color'])
+def ask_for_image_clust(message):
+	markup_cancel = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True)
+	cancel = telebot.types.KeyboardButton('stop')
+	markup_cancel.row(cancel)
+	msg=bot.send_message(message.chat.id,'Отправьте изображение',reply_markup = markup_cancel)
+	bot.register_next_step_handler(msg, clusterization)
+	
+def clusterization(message):
+	if validate_stop(message):
+		return
+	if message.photo is None:
+		msg=bot.send_message(message.chat.id,'Не изображение')
+		bot.register_next_step_handler(msg, colorize)
+		return
+	else:
+		markup = telebot.types.ReplyKeyboardRemove(selective=False)
+		photo = message.photo[-1].file_id
+		file = bot.get_file(photo)
+		if file.file_size > 10485760:
+			msg=bot.send_message(message.chat.id,'Файл не должен быть больше 10 МБ')
+			bot.register_next_step_handler(msg, clusterization)
+		else:
+			downloaded_file = bot.download_file(file.file_path)
+			image_file = io.BytesIO(downloaded_file)
+			img=change_color(image_file)
+			bot.send_photo(message.chat.id, img, reply_markup=markup)
+	
 		
 @bot.message_handler(func=is_normal, content_types=["text"])
 def show_welcome(message): # Название функции не играет никакой роли, в принципе

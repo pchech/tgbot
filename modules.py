@@ -2,7 +2,11 @@ from PIL import Image, ImageDraw #Подключим необходимые би
 import random
 import Algorithmia
 import posixpath
-		
+from skimage.io import imread	
+from skimage import img_as_float
+from sklearn.cluster import KMeans
+import io
+
 class Filter:
     def black_white_filter(self,dir):
         image = Image.open(dir) #Открываем изображениеH.
@@ -131,3 +135,35 @@ class Colorizer:
         out = algo.pipe(input).result
         t800Bytes = self.client.file(out['output']).getBytes()
         return t800Bytes
+		
+def find_color(i):
+    cluster=res[i]
+    mean=[]
+    for j in range(X.shape[0]):
+        if res[j]==cluster:
+            mean.append(X[j])
+    R=0
+    G=0
+    B=0
+    for j in mean:
+        R+=j[0]
+        G+=j[1]
+        B+=j[2]
+    return list([R/len(mean),G/len(mean),B/len(mean)])
+	
+def change_color(img):
+	image=imread(img)
+	image=img_as_float(image)
+	X = image.reshape(image.shape[0] * image.shape[1], 3)
+	clt=KMeans(random_state=241,init='k-means++',n_clusters=4)
+	clt.fit(X)
+	res=clt.predict(X)
+	centre=clt.cluster_centers_
+	new_X=[]
+	for i in range(X.shape[0]):
+		new_X.append(centre[res[i]])
+	new_image = np.array(new_X).reshape(image.shape[0], image.shape[1], 3)
+	imgByteArr = io.BytesIO()
+	new_image.save(imgByteArr,format = 'PNG')
+	imgByteArr = imgByteArr.getvalue()
+	return imgByteArr
