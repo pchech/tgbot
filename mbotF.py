@@ -134,7 +134,7 @@ def colorize(message):
 		file = bot.get_file(photo)
 		downloaded_file = bot.download_file(file.file_path)
 		image_file = io.BytesIO(downloaded_file)
-		img=colorizer.action(image_file)
+		img=colorizer.action(downloaded_file)
 		bot.send_photo(message.chat.id, img)
 		
 @bot.message_handler(func=is_normal, content_types=["text"])
