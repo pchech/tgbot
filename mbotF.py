@@ -216,7 +216,7 @@ def clusterization(message):
 		else:
 			downloaded_file = bot.download_file(file.file_path)
 			image_file = io.BytesIO(downloaded_file)
-			img=change_color(image_file)
+			img=change_color(image_file,parameters)
 			bot.send_photo(message.chat.id, img, reply_markup=markup)
 	
 		

@@ -152,11 +152,11 @@ def find_color(i):
         B+=j[2]
     return list([R/len(mean),G/len(mean),B/len(mean)])
 	
-def change_color(img):
+def change_color(img,n_color):
 	image=imread(img)
 	image=img_as_float(image)
 	X = image.reshape(image.shape[0] * image.shape[1], 3)
-	clt=KMeans(random_state=241,init='k-means++',n_clusters=4)
+	clt=KMeans(random_state=241,init='k-means++',n_clusters=n_color)
 	clt.fit(X)
 	res=clt.predict(X)
 	centre=clt.cluster_centers_
