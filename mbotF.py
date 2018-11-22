@@ -54,6 +54,8 @@ def add_parameters(message):
 	global parameters
 	try:
 		parameters=int(message.text)
+		if fil == 'noise':
+			parameters=abs(parameters)
 		msg=bot.send_message(message.chat.id,'Отправьте изображение')
 		bot.register_next_step_handler(msg, make_filter)
 	except ValueError:
@@ -146,10 +148,15 @@ def filter_choice(image_file,parameters):
 
 @bot.message_handler(commands=['colorize'])
 def ask_for_image(message):
-	msg=bot.send_message(message.chat.id,'Отправьте изображение')
+	markup_cancel = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True)
+	cancel = telebot.types.KeyboardButton('stop')
+	markup_cancel.row(cancel)
+	msg=bot.send_message(message.chat.id,'Отправьте изображение',reply_markup = markup_cancel)
 	bot.register_next_step_handler(msg, colorize)
 
 def colorize(message):
+	if validate_stop(message):
+		return
 	if message.photo is None:
 		msg=bot.send_message(message.chat.id,'Не изображение')
 		bot.register_next_step_handler(msg, colorize)
