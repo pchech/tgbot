@@ -162,11 +162,12 @@ def colorize(message):
 		bot.register_next_step_handler(msg, colorize)
 		return
 	else:
+		markup = telebot.types.ReplyKeyboardRemove(selective=False)
 		photo = message.photo[-1].file_id
 		file = bot.get_file(photo)
 		downloaded_file = bot.download_file(file.file_path)
 		img=colorizer.action(downloaded_file)
-		bot.send_photo(message.chat.id, img)
+		bot.send_photo(message.chat.id, img, reply_markup=markup)
 		
 @bot.message_handler(func=is_normal, content_types=["text"])
 def show_welcome(message): # Название функции не играет никакой роли, в принципе
