@@ -22,6 +22,10 @@ bot = telebot.TeleBot(token)
 change=0
 filter = Filter()
 colorizer=Colorizer(os.environ.get('ALGO_KEY'),'MyCollection')
+welcome_message="""Бот обладает следующими возможностями:
+/filter - Применить один из 5 фильтров (черно-белое фото, сепия, негатив, наложение шума, изменение яркости)
+/colorize - Окраска черно-белых изображений"""
+
 @bot.message_handler(commands=['change'])
 def change_mod(message):
     global change
@@ -63,23 +67,26 @@ def choose_filter(message):
 	itembtn3 = telebot.types.KeyboardButton('negative')
 	itembtn4 = telebot.types.KeyboardButton('brightness')
 	itembtn5 = telebot.types.KeyboardButton('noise')
+	itembtn6 = telebot.types.KeyboardButton('stop')
 	markup.row(itembtn1, itembtn2,itembtn3)
 	markup.row(itembtn4, itembtn5)
+	markup.row(itembtn6)
 	msg=bot.send_message(message.chat.id,'Выберите фильтр', reply_markup = markup)	
 	bot.register_next_step_handler(msg, welcome)
 	
 def welcome(message):
 	global fil
 	fil=message.text
-	markup = telebot.types.ReplyKeyboardRemove(selective=False)
+	markup_cancel = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True)
+	cancel = telebot.types.KeyboardButton('stop')
 	if fil == 'sepia':
-		msg=bot.send_message(message.chat.id,'Укажите глубину', reply_markup=markup)
+		msg=bot.send_message(message.chat.id,'Укажите глубину', reply_markup=cancel)
 		bot.register_next_step_handler(msg, add_parameters)
 	elif fil in ('brightness','noise'):
-		msg=bot.send_message(message.chat.id,'Укажите параметр', reply_markup=markup)
+		msg=bot.send_message(message.chat.id,'Укажите параметр', reply_markup=cancel)
 		bot.register_next_step_handler(msg, add_parameters)
 	elif fil in ('bw','negative'):
-		msg=bot.send_message(message.chat.id,'Отправьте изображение', reply_markup=markup)
+		msg=bot.send_message(message.chat.id,'Отправьте изображение', reply_markup=cancel)
 		bot.register_next_step_handler(msg, make_filter)
 	else:
 		msg=bot.send_message(message.chat.id,'Неверный фильтр')
@@ -88,6 +95,7 @@ def welcome(message):
 	
 
 def make_filter(message):
+	markup = telebot.types.ReplyKeyboardRemove(selective=False)
 	if message.photo is None:
 		msg=bot.send_message(message.chat.id,'Не изображение')
 		bot.register_next_step_handler(msg, make_filter)
@@ -95,16 +103,20 @@ def make_filter(message):
 	else:
 		photo = message.photo[-1].file_id
 		file = bot.get_file(photo)
-		downloaded_file = bot.download_file(file.file_path)
-		image_file = io.BytesIO(downloaded_file)
-		if fil in ('brightness','noise','sepia'):	
-			img=filter_choice(image_file,parameters)
+		if file.file_size > 10485760:
+			msg=bot.send_message(message.chat.id,'Файл не должен быть больше 10 МБ')
+			bot.register_next_step_handler(msg, make_filter)
 		else:
-			img=filter_choice(image_file,None)
-		imgByteArr = io.BytesIO()
-		img.save(imgByteArr,format = 'PNG')
-		imgByteArr = imgByteArr.getvalue()
-		bot.send_photo(message.chat.id, imgByteArr)
+			downloaded_file = bot.download_file(file.file_path)
+			image_file = io.BytesIO(downloaded_file)
+			if fil in ('brightness','noise','sepia'):	
+				img=filter_choice(image_file,parameters)
+			else:
+				img=filter_choice(image_file,None)
+			imgByteArr = io.BytesIO()
+			img.save(imgByteArr,format = 'PNG')
+			imgByteArr = imgByteArr.getvalue()
+			bot.send_photo(message.chat.id, imgByteArr,reply_markup = markup)
 
 def filter_choice(image_file,parameters):
 	if fil == 'bw':
@@ -133,13 +145,12 @@ def colorize(message):
 		photo = message.photo[-1].file_id
 		file = bot.get_file(photo)
 		downloaded_file = bot.download_file(file.file_path)
-		image_file = io.BytesIO(downloaded_file)
 		img=colorizer.action(downloaded_file)
 		bot.send_photo(message.chat.id, img)
 		
 @bot.message_handler(func=is_normal, content_types=["text"])
-def repeat_all_messages(message): # Название функции не играет никакой роли, в принципе
-    bot.send_message(message.chat.id, message.text[::-1])
+def show_welcome(message): # Название функции не играет никакой роли, в принципе
+    bot.send_message(message.chat.id, welcome_message)
 
 @bot.message_handler(func=is_mtg, content_types=["text"])
 def card_search(message):
