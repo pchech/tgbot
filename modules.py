@@ -121,11 +121,11 @@ class Colorizer:
     def __init__(self,api_key,collection_name):
         self.client = Algorithmia.client(api_key)
         self.collection_name = collection_name
-    def action(self,filepath):
-        mass = filepath.split("/")
-        self.client.file("data://.my/"+self.collection_name+"/"+mass[len(mass) - 1]).putFile(filepath)
+    def action(self,data):
+        #mass = filepath.split("/")
+        self.client.file("data://.my/"+self.collection_name+"/testimg.png").put(data)
         input = {
-            "image": "data://.my/"+self.collection_name+"/"+mass[len(mass) - 1]
+            "image": "data://.my/"+self.collection_name+"/testimg.png"]
         }
         algo = self.client.algo('deeplearning/ColorfulImageColorization/1.1.13')
         out = algo.pipe(input).result
