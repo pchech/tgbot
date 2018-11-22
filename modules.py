@@ -125,7 +125,7 @@ class Colorizer:
         #mass = filepath.split("/")
         self.client.file("data://.my/"+self.collection_name+"/testimg.png").put(data)
         input = {
-            "image": "data://.my/"+self.collection_name+"/testimg.png"]
+            "image": "data://.my/"+self.collection_name+"/testimg.png"
         }
         algo = self.client.algo('deeplearning/ColorfulImageColorization/1.1.13')
         out = algo.pipe(input).result
