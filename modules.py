@@ -7,7 +7,7 @@ from skimage import img_as_float
 from sklearn.cluster import KMeans
 import io
 import numpy as np
-
+import scipy.misc
 class Filter:
     def black_white_filter(self,dir):
         image = Image.open(dir) #Открываем изображениеH.
@@ -164,7 +164,7 @@ def change_color(img):
 	for i in range(X.shape[0]):
 		new_X.append(centre[res[i]])
 	new_image = np.array(new_X).reshape(image.shape[0], image.shape[1], 3)
-	n_img = Image.fromarray(new_image, 'RGB')
+	n_img = scipy.misc.toimage(new_image)
 	imgByteArr = io.BytesIO()
 	n_img.save(imgByteArr,format = 'JPEG')
 	imgByteArr = imgByteArr.getvalue()

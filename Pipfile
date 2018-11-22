@@ -13,6 +13,7 @@ pathlib = "*"
 scikit-learn = "*"
 scikit-image = "*"
 numpy = "*"
+scipy = "*"
 
 [dev-packages]
 
