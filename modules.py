@@ -164,7 +164,8 @@ def change_color(img):
 	for i in range(X.shape[0]):
 		new_X.append(centre[res[i]])
 	new_image = np.array(new_X).reshape(image.shape[0], image.shape[1], 3)
+	n_img = Image.fromarray(new_image, 'RGB')
 	imgByteArr = io.BytesIO()
-	new_image.save(imgByteArr,format = 'PNG')
+	n_img.save(imgByteArr,format = 'PNG')
 	imgByteArr = imgByteArr.getvalue()
 	return imgByteArr
