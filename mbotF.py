@@ -49,6 +49,8 @@ def is_mtg(message):
     return change == 1
 
 def add_parameters(message):
+	if validate_stop(message):
+		return
 	global parameters
 	try:
 		parameters=int(message.text)
@@ -58,6 +60,12 @@ def add_parameters(message):
 		msg=bot.send_message(message.chat.id,'Параметр должен быть числовым')
 		bot.register_next_step_handler(msg, add_parameters)
 		return
+	
+def validate_stop(message):
+		if message.text == 'stop':
+			markup = telebot.types.ReplyKeyboardRemove(selective=False)
+			bot.send_message(message.chat.id,'Процесс остановлен', reply_markup=markup)
+			return True
 	
 @bot.message_handler(commands=['filter'])
 def choose_filter(message):
@@ -75,18 +83,21 @@ def choose_filter(message):
 	bot.register_next_step_handler(msg, welcome)
 	
 def welcome(message):
+	if validate_stop(message):
+		return
 	global fil
 	fil=message.text
 	markup_cancel = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True)
 	cancel = telebot.types.KeyboardButton('stop')
+	markup_cancel.row(cancel)
 	if fil == 'sepia':
-		msg=bot.send_message(message.chat.id,'Укажите глубину', reply_markup=cancel)
+		msg=bot.send_message(message.chat.id,'Укажите глубину', reply_markup=markup_cancel)
 		bot.register_next_step_handler(msg, add_parameters)
 	elif fil in ('brightness','noise'):
-		msg=bot.send_message(message.chat.id,'Укажите параметр', reply_markup=cancel)
+		msg=bot.send_message(message.chat.id,'Укажите параметр', reply_markup=markup_cancel)
 		bot.register_next_step_handler(msg, add_parameters)
 	elif fil in ('bw','negative'):
-		msg=bot.send_message(message.chat.id,'Отправьте изображение', reply_markup=cancel)
+		msg=bot.send_message(message.chat.id,'Отправьте изображение', reply_markup=markup_cancel)
 		bot.register_next_step_handler(msg, make_filter)
 	else:
 		msg=bot.send_message(message.chat.id,'Неверный фильтр')
@@ -95,6 +106,8 @@ def welcome(message):
 	
 
 def make_filter(message):
+	if validate_stop(message):
+		return
 	markup = telebot.types.ReplyKeyboardRemove(selective=False)
 	if message.photo is None:
 		msg=bot.send_message(message.chat.id,'Не изображение')
