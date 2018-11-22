@@ -6,6 +6,7 @@ from skimage.io import imread
 from skimage import img_as_float
 from sklearn.cluster import KMeans
 import io
+import numpy as np
 
 class Filter:
     def black_white_filter(self,dir):

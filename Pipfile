@@ -12,6 +12,7 @@ algorithmia = "*"
 pathlib = "*"
 scikit-learn = "*"
 scikit-image = "*"
+numpy = "*"
 
 [dev-packages]
 
