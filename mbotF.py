@@ -6,7 +6,7 @@ import json
 import os
 import io
 from modules import Filter, Colorizer, change_color
-from mtg import card_search,is_normal, is_mtg
+from mtg import card_search,is_normal, is_mtg, change
 token = os.environ.get('TOKEN')
 server = Flask(__name__)
 WEBHOOK_HOST = 'cryptic-citadel-53949.herokuapp.com'
