@@ -5,9 +5,11 @@ import requests
 import json
 import os
 import io
-from modules import Colorizer, change_color
+from modules import change_color
 from mtg import card_search,is_normal, is_mtg, change_mod
 from filters import Filt
+from colorization import Coloriz
+
 token = os.environ.get('TOKEN')
 server = Flask(__name__)
 WEBHOOK_HOST = 'cryptic-citadel-53949.herokuapp.com'
@@ -21,12 +23,13 @@ WEBHOOK_URL_BASE = "https://%s:%s" % (WEBHOOK_HOST, WEBHOOK_PORT)
 WEBHOOK_URL_PATH = "/%s/" % (token)
 
 bot = telebot.TeleBot(token)
-colorizer=Colorizer(os.environ.get('ALGO_KEY'),'MyCollection')
+
 welcome_message="""Бот обладает следующими возможностями:
 /filter - Применить один из 5 фильтров (черно-белое фото, сепия, негатив, наложение шума, изменение яркости)
 /colorize - Окраска черно-белых изображений"""
 
 filt=Filt(bot)
+coloriz=Coloriz(bot)
 @bot.message_handler(commands=['change'])
 def change_mod_process(message):
     change_mod(message,bot)
@@ -39,29 +42,8 @@ def apply_filter(message):
 	filt.choose_filter(message)
 
 @bot.message_handler(commands=['colorize'])
-def ask_for_image(message):
-	markup_cancel = prepare_stop(message)
-	msg=bot.send_message(message.chat.id,'Отправьте изображение',reply_markup = markup_cancel)
-	bot.register_next_step_handler(msg, colorize)
-
-def colorize(message):
-	if validate_stop(message):
-		return
-	if message.photo is None:
-		msg=bot.send_message(message.chat.id,'Не изображение')
-		bot.register_next_step_handler(msg, colorize)
-		return
-	else:
-		markup = telebot.types.ReplyKeyboardRemove(selective=False)
-		photo = message.photo[-1].file_id
-		file = bot.get_file(photo)
-		if file.file_size > 10485760:
-			msg=bot.send_message(message.chat.id,'Файл не должен быть больше 10 МБ')
-			bot.register_next_step_handler(msg, colorize)
-		else:
-			downloaded_file = bot.download_file(file.file_path)
-			img=colorizer.action(downloaded_file)
-			bot.send_photo(message.chat.id, img, reply_markup=markup)
+def colorize_photo(message):
+	coloriz.ask_for_image(message)
 			
 @bot.message_handler(commands=['change_color'])
 def ask_for_image_clust(message):

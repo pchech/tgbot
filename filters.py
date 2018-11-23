@@ -1,22 +1,12 @@
 import telebot
 import io
 from modules import Filter
-
+from utils import validate_stop,prepare_stop
 filter = Filter()
 class Filt():
 	def __init__(self,bot):
 		self.bot=bot
-	def prepare_stop(self,message):
-		markup_cancel = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True)
-		cancel = telebot.types.KeyboardButton('stop')
-		markup_cancel.row(cancel)		
-		return markup_cancel
-
-	def validate_stop(self,message):
-			if message.text == 'stop':
-				markup = telebot.types.ReplyKeyboardRemove(selective=False)
-				self.bot.send_message(message.chat.id,'Процесс остановлен', reply_markup=markup)
-				return True
+	
 
 	def choose_filter(self,message):
 		markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard = True)
@@ -33,11 +23,11 @@ class Filt():
 		self.bot.register_next_step_handler(msg, self.welcome)
 		
 	def welcome(self,message):
-		if self.validate_stop(message):
+		if validate_stop(message,bot):
 			return
 		global fil
 		fil=message.text
-		markup_cancel = self.prepare_stop(message)
+		markup_cancel = prepare_stop(message)
 		if fil == 'sepia':
 			msg=self.bot.send_message(message.chat.id,'Укажите глубину', reply_markup=markup_cancel)
 			self.bot.register_next_step_handler(msg, self.add_parameters)
@@ -53,7 +43,7 @@ class Filt():
 			return
 
 	def add_parameters(self,message):
-		if self.validate_stop(message):
+		if validate_stop(message,bot):
 			return
 		global parameters
 		try:
@@ -68,7 +58,7 @@ class Filt():
 			return
 
 	def make_filter(self,message):
-		if self.validate_stop(message):
+		if validate_stop(message,bot):
 			return
 		markup = telebot.types.ReplyKeyboardRemove(selective=False)
 		if message.photo is None:
