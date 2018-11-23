@@ -1,5 +1,6 @@
 import telebot
 import io
+import np
 from utils import prepare_stop, validate_stop
 from skimage.io import imread	
 from skimage import img_as_float

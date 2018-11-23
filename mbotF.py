@@ -2,6 +2,7 @@ import telebot
 from flask import Flask, request
 import os
 from mtg import card_search,is_normal, is_mtg, change_mod
+from utils import validate_stop
 from filters import Filter
 from colorization import Colorizer
 from clusterization import Cluster
@@ -45,7 +46,9 @@ def ask_for_image_clust(message):
 		
 @bot.message_handler(func=is_normal, content_types=["text"])
 def show_welcome(message):
-    bot.send_message(message.chat.id, welcome_message)
+	if validate_stop(message,bot):
+		return
+	bot.send_message(message.chat.id, welcome_message)
 
 @bot.message_handler(func=is_mtg, content_types=["text"])
 def mtg_search(message):
