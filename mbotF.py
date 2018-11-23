@@ -1,10 +1,6 @@
 import telebot
-import cherrypy
 from flask import Flask, request
-import requests
-import json
 import os
-import io
 from mtg import card_search,is_normal, is_mtg, change_mod
 from filters import Filt
 from colorization import Coloriz
@@ -64,9 +60,9 @@ def getMessage():
 @server.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url='https://cryptic-citadel-53949.herokuapp.com/' + token)
+    bot.set_webhook(url=WEBHOOK_URL_PATH)
     return "!", 200
 
 
 if __name__ == "__main__":
-    server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
+    server.run(host=WEBHOOK_LISTEN, port=int(os.environ.get('PORT', 5000)))
