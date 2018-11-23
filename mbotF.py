@@ -1,14 +1,10 @@
 import telebot
-import cherrypy
 from flask import Flask, request
-import requests
-import json
 import os
-import io
-from modules import change_color
 from mtg import card_search,is_normal, is_mtg, change_mod
 from filters import Filt
 from colorization import Coloriz
+from clusterization import Cluster
 
 token = os.environ.get('TOKEN')
 server = Flask(__name__)
@@ -16,8 +12,6 @@ WEBHOOK_HOST = 'cryptic-citadel-53949.herokuapp.com'
 WEBHOOK_PORT = 8443#8443  # 443, 80, 88 или 8443 (порт должен быть открыт!)
 WEBHOOK_LISTEN = '0.0.0.0'  # На некоторых серверах придется указывать такой же IP, что и выше
 
-WEBHOOK_SSL_CERT = './webhook_cert.pem'  # Путь к сертификату
-WEBHOOK_SSL_PRIV = './webhook_pkey.pem'  # Путь к приватному ключу
 
 WEBHOOK_URL_BASE = "https://%s:%s" % (WEBHOOK_HOST, WEBHOOK_PORT)
 WEBHOOK_URL_PATH = "/%s/" % (token)
@@ -30,6 +24,7 @@ welcome_message="""Бот обладает следующими возможно
 
 filt=Filt(bot)
 coloriz=Coloriz(bot)
+cluster=Cluster(bot)
 
 @bot.message_handler(commands=['change'])
 def change_mod_process(message):
@@ -45,47 +40,7 @@ def colorize_photo(message):
 			
 @bot.message_handler(commands=['change_color'])
 def ask_for_image_clust(message):
-	markup_cancel = prepare_stop(message)
-	msg=bot.send_message(message.chat.id,'Выберите число цветов (не более 10)',reply_markup = markup_cancel)
-	bot.register_next_step_handler(msg, ask_for_color)
-
-def ask_for_color(message):
-	if validate_stop(message):
-		return
-	try:
-		global parameters
-		parameters=int(message.text)
-		if parameters > 10:
-			msg=bot.send_message(message.chat.id,'Не больше 10 цветов')
-			bot.register_next_step_handler(msg, ask_for_color)
-			return
-		msg=bot.send_message(message.chat.id,'Отправьте изображение')
-		bot.register_next_step_handler(msg, clusterization)
-	except ValueError:
-		msg=bot.send_message(message.chat.id,'Параметр должен быть числовым')
-		bot.register_next_step_handler(msg, ask_for_color)
-		return
-
-	
-def clusterization(message):
-	if validate_stop(message):
-		return
-	if message.photo is None:
-		msg=bot.send_message(message.chat.id,'Не изображение')
-		bot.register_next_step_handler(msg, colorize)
-		return
-	else:
-		markup = telebot.types.ReplyKeyboardRemove(selective=False)
-		photo = message.photo[-1].file_id
-		file = bot.get_file(photo)
-		if file.file_size > 10485760:
-			msg=bot.send_message(message.chat.id,'Файл не должен быть больше 10 МБ')
-			bot.register_next_step_handler(msg, clusterization)
-		else:
-			downloaded_file = bot.download_file(file.file_path)
-			image_file = io.BytesIO(downloaded_file)
-			img=change_color(image_file,parameters)
-			bot.send_photo(message.chat.id, img, reply_markup=markup)
+	cluster.ask_for_image_clust(message)
 	
 		
 @bot.message_handler(func=is_normal, content_types=["text"])

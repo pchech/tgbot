@@ -87,11 +87,11 @@ class Filt():
 		if fil == 'Черно-белое':
 			img=filter.black_white_filter(image_file)
 		elif fil == 'Сепия':
-			img=filter.Сепия(image_file,parameters)
+			img=filter.sepia(image_file,parameters)
 		elif fil == 'Негатив':
-			img=filter.Негатив(image_file)
+			img=filter.negativ(image_file)
 		elif fil == 'Изменить яркость':
-			img=filter.Изменить яркостьChange(image_file,parameters)
+			img=filter.brightnessChange(image_file,parameters)
 		elif fil == 'Добавить шум':
-			img=filter.add_Добавить шум(image_file,parameters)
+			img=filter.add_noise(image_file,parameters)
 		return img
