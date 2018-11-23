@@ -20,123 +20,26 @@ WEBHOOK_URL_BASE = "https://%s:%s" % (WEBHOOK_HOST, WEBHOOK_PORT)
 WEBHOOK_URL_PATH = "/%s/" % (token)
 
 bot = telebot.TeleBot(token)
-filter = Filter()
 colorizer=Colorizer(os.environ.get('ALGO_KEY'),'MyCollection')
 welcome_message="""Бот обладает следующими возможностями:
 /filter - Применить один из 5 фильтров (черно-белое фото, сепия, негатив, наложение шума, изменение яркости)
 /colorize - Окраска черно-белых изображений"""
 
-
+filt=Filt(bot)
 @bot.message_handler(commands=['change'])
 def change_mod_process(message):
     change_mod(message,bot)
 
 
-		
 
-
-def validate_stop(message):
-		if message.text == 'stop':
-			markup = telebot.types.ReplyKeyboardRemove(selective=False)
-			bot.send_message(message.chat.id,'Процесс остановлен', reply_markup=markup)
-			return True
 	
 @bot.message_handler(commands=['filter'])
-def choose_filter(message):
-	markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard = True)
-	itembtn1 = telebot.types.KeyboardButton('bw')
-	itembtn2 = telebot.types.KeyboardButton('sepia')
-	itembtn3 = telebot.types.KeyboardButton('negative')
-	itembtn4 = telebot.types.KeyboardButton('brightness')
-	itembtn5 = telebot.types.KeyboardButton('noise')
-	itembtn6 = telebot.types.KeyboardButton('stop')
-	markup.row(itembtn1, itembtn2,itembtn3)
-	markup.row(itembtn4, itembtn5)
-	markup.row(itembtn6)
-	msg=bot.send_message(message.chat.id,'Выберите фильтр', reply_markup = markup)	
-	bot.register_next_step_handler(msg, welcome)
-	
-def welcome(message):
-	if validate_stop(message):
-		return
-	global fil
-	fil=message.text
-	markup_cancel = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True)
-	cancel = telebot.types.KeyboardButton('stop')
-	markup_cancel.row(cancel)
-	if fil == 'sepia':
-		msg=bot.send_message(message.chat.id,'Укажите глубину', reply_markup=markup_cancel)
-		bot.register_next_step_handler(msg, add_parameters)
-	elif fil in ('brightness','noise'):
-		msg=bot.send_message(message.chat.id,'Укажите параметр', reply_markup=markup_cancel)
-		bot.register_next_step_handler(msg, add_parameters)
-	elif fil in ('bw','negative'):
-		msg=bot.send_message(message.chat.id,'Отправьте изображение', reply_markup=markup_cancel)
-		bot.register_next_step_handler(msg, make_filter)
-	else:
-		msg=bot.send_message(message.chat.id,'Неверный фильтр')
-		bot.register_next_step_handler(msg, welcome)
-		return
-
-def add_parameters(message):
-	if validate_stop(message):
-		return
-	global parameters
-	try:
-		parameters=int(message.text)
-		if fil == 'noise':
-			parameters=abs(parameters)
-		msg=bot.send_message(message.chat.id,'Отправьте изображение')
-		bot.register_next_step_handler(msg, make_filter)
-	except ValueError:
-		msg=bot.send_message(message.chat.id,'Параметр должен быть числовым')
-		bot.register_next_step_handler(msg, add_parameters)
-		return
-
-def make_filter(message):
-	if validate_stop(message):
-		return
-	markup = telebot.types.ReplyKeyboardRemove(selective=False)
-	if message.photo is None:
-		msg=bot.send_message(message.chat.id,'Не изображение')
-		bot.register_next_step_handler(msg, make_filter)
-		return
-	else:
-		photo = message.photo[-1].file_id
-		file = bot.get_file(photo)
-		if file.file_size > 10485760:
-			msg=bot.send_message(message.chat.id,'Файл не должен быть больше 10 МБ')
-			bot.register_next_step_handler(msg, make_filter)
-		else:
-			downloaded_file = bot.download_file(file.file_path)
-			image_file = io.BytesIO(downloaded_file)
-			if fil in ('brightness','noise','sepia'):	
-				img=filter_choice(image_file,parameters)
-			else:
-				img=filter_choice(image_file,None)
-			imgByteArr = io.BytesIO()
-			img.save(imgByteArr,format = 'PNG')
-			imgByteArr = imgByteArr.getvalue()
-			bot.send_photo(message.chat.id, imgByteArr,reply_markup = markup)
-
-def filter_choice(image_file,parameters):
-	if fil == 'bw':
-		img=filter.black_white_filter(image_file)
-	elif fil == 'sepia':
-		img=filter.sepia(image_file,parameters)
-	elif fil == 'negative':
-		img=filter.negative(image_file)
-	elif fil == 'brightness':
-		img=filter.brightnessChange(image_file,parameters)
-	elif fil == 'noise':
-		img=filter.add_noise(image_file,parameters)
-	return img
+def apply_filter(message):
+	filt.choose_filter(message)
 
 @bot.message_handler(commands=['colorize'])
 def ask_for_image(message):
-	markup_cancel = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True)
-	cancel = telebot.types.KeyboardButton('stop')
-	markup_cancel.row(cancel)
+	markup_cancel = prepare_stop(message)
 	msg=bot.send_message(message.chat.id,'Отправьте изображение',reply_markup = markup_cancel)
 	bot.register_next_step_handler(msg, colorize)
 
@@ -161,9 +64,7 @@ def colorize(message):
 			
 @bot.message_handler(commands=['change_color'])
 def ask_for_image_clust(message):
-	markup_cancel = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True)
-	cancel = telebot.types.KeyboardButton('stop')
-	markup_cancel.row(cancel)
+	markup_cancel = prepare_stop(message)
 	msg=bot.send_message(message.chat.id,'Выберите число цветов (не более 10)',reply_markup = markup_cancel)
 	bot.register_next_step_handler(msg, ask_for_color)
 

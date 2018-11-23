@@ -4,6 +4,7 @@ import telebot
 c_types=['c','t','o','m','cmc','mana','is','r','e','in','f']
 change=0
 
+#Смена режима работы бота
 def change_mod(message,bot):
     global change
     if change == 0:
@@ -12,21 +13,25 @@ def change_mod(message,bot):
     else:
         change = 0
         bot.send_message(message.chat.id, 'Включен обычный режим')
-
+		
+#Проверка на валидность типа
 def validate_type(type):
     if type in c_types:
         return True
     else:
         return False
 		
+#Бот в обычном режиме?	
 def is_normal(message):
     global change
     return change == 0
 	
+#Бот в MTG режиме?
 def is_mtg(message):
     global change
     return change == 1
 	
+#Поиск карты по названию
 def card_search(message,bot):
     if '=' in message.text:
         list_arg=message.text.split(' ')
