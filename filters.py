@@ -23,7 +23,7 @@ class Filt():
 		self.bot.register_next_step_handler(msg, self.welcome)
 		
 	def welcome(self,message):
-		if validate_stop(message,bot):
+		if validate_stop(message,self.bot):
 			return
 		global fil
 		fil=message.text
@@ -43,7 +43,7 @@ class Filt():
 			return
 
 	def add_parameters(self,message):
-		if validate_stop(message,bot):
+		if validate_stop(message,self.bot):
 			return
 		global parameters
 		try:
@@ -58,7 +58,7 @@ class Filt():
 			return
 
 	def make_filter(self,message):
-		if validate_stop(message,bot):
+		if validate_stop(message,self.bot):
 			return
 		markup = telebot.types.ReplyKeyboardRemove(selective=False)
 		if message.photo is None:
