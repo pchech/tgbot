@@ -6,7 +6,7 @@ import json
 import os
 import io
 from modules import Filter, Colorizer, change_color
-from mtg import card_search,is_normal, is_mtg, change
+from mtg import card_search,is_normal, is_mtg, change_mod
 token = os.environ.get('TOKEN')
 server = Flask(__name__)
 WEBHOOK_HOST = 'cryptic-citadel-53949.herokuapp.com'
@@ -28,14 +28,8 @@ welcome_message="""Бот обладает следующими возможно
 
 
 @bot.message_handler(commands=['change'])
-def change_mod(message):
-    global change
-    if change == 0:
-        change = 1
-        bot.send_message(message.chat.id, 'Включен MTG режим')
-    else:
-        change = 0
-        bot.send_message(message.chat.id, 'Включен обычный режим')
+def change_mod_process(message):
+    change_mod(message,bot)
 
 
 		

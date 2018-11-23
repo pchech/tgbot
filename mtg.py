@@ -3,6 +3,16 @@ import json
 import telebot
 c_types=['c','t','o','m','cmc','mana','is','r','e','in','f']
 change=0
+
+def change_mod(message,bot):
+    global change
+    if change == 0:
+        change = 1
+        bot.send_message(message.chat.id, 'Включен MTG режим')
+    else:
+        change = 0
+        bot.send_message(message.chat.id, 'Включен обычный режим')
+
 def validate_type(type):
     if type in c_types:
         return True
