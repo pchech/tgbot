@@ -2,8 +2,8 @@ import telebot
 from flask import Flask, request
 import os
 from mtg import card_search,is_normal, is_mtg, change_mod
-from filters import Filt
-from colorization import Coloriz
+from filters import Filter
+from colorization import Colorizer
 from clusterization import Cluster
 token = os.environ.get('TOKEN')
 server = Flask(__name__)
@@ -23,8 +23,8 @@ welcome_message="""Бот обладает следующими возможно
 /filter - Применить один из 5 фильтров (черно-белое фото, сепия, негатив, наложение шума, изменение яркости)
 /colorize - Окраска черно-белых изображений"""
 
-filt=Filt(bot)
-coloriz=Coloriz(bot)
+filt=Filter(bot)
+coloriz=Colorizer(bot,os.environ.get('ALGO_KEY'),'MyCollection')
 cluster=Cluster(bot)
 @bot.message_handler(commands=['change'])
 def change_mod_process(message):

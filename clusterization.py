@@ -1,7 +1,10 @@
 import telebot
 import io
 from utils import prepare_stop, validate_stop
-from modules import change_color
+from skimage.io import imread	
+from skimage import img_as_float
+from sklearn.cluster import KMeans
+import scipy.misc
 
 class Cluster:
 	def __init__(self,bot):
@@ -47,5 +50,23 @@ class Cluster:
 			else:
 				downloaded_file = self.bot.download_file(file.file_path)
 				image_file = io.BytesIO(downloaded_file)
-				img=change_color(image_file,parameters)
+				img=self.change_color(image_file,parameters)
 				self.bot.send_photo(message.chat.id, img, reply_markup=markup)
+	
+	def change_color(self,img,n_color):
+		image=imread(img)
+		image=img_as_float(image)
+		X = image.reshape(image.shape[0] * image.shape[1], 3)
+		clt=KMeans(random_state=241,init='k-means++',n_clusters=n_color)
+		clt.fit(X)
+		res=clt.predict(X)
+		centre=clt.cluster_centers_
+		new_X=[]
+		for i in range(X.shape[0]):
+			new_X.append(centre[res[i]])
+		new_image = np.array(new_X).reshape(image.shape[0], image.shape[1], 3)
+		n_img = scipy.misc.toimage(new_image)
+		imgByteArr = io.BytesIO()
+		n_img.save(imgByteArr,format = 'JPEG')
+		imgByteArr = imgByteArr.getvalue()
+		return imgByteArr

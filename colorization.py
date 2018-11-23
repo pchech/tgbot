@@ -1,12 +1,13 @@
 import telebot
-from modules import Colorizer
 import os
 from utils import validate_stop,prepare_stop
-colorizer=Colorizer(os.environ.get('ALGO_KEY'),'MyCollection')
+import Algorithmia
 
-class Coloriz:
-	def __init__(self,bot):
+class Colorizer:
+	def __init__(self,bot,api_key,collection_name):
 		self.bot=bot
+		self.client = Algorithmia.client(api_key)
+        self.collection_name = collection_name
 
 	def ask_for_image(self,message):
 		markup_cancel = prepare_stop(message)
@@ -29,5 +30,15 @@ class Coloriz:
 				self.bot.register_next_step_handler(msg, colorize)
 			else:
 				downloaded_file = self.bot.download_file(file.file_path)
-				img=colorizer.action(downloaded_file)
+				img=self.action(downloaded_file)
 				self.bot.send_photo(message.chat.id, img, reply_markup=markup)
+	def action(self,data):
+        #mass = filepath.split("/")
+        self.client.file("data://.my/"+self.collection_name+"/testimg.png").put(data)
+        input = {
+            "image": "data://.my/"+self.collection_name+"/testimg.png"
+        }
+        algo = self.client.algo('deeplearning/ColorfulImageColorization/1.1.13')
+        out = algo.pipe(input).result
+        t800Bytes = self.client.file(out['output']).getBytes()
+        return t800Bytes
