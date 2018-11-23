@@ -22,7 +22,9 @@ bot = telebot.TeleBot(token)
 
 welcome_message="""Бот обладает следующими возможностями:
 /filter - Применить один из 5 фильтров (черно-белое фото, сепия, негатив, наложение шума, изменение яркости)
-/colorize - Окраска черно-белых изображений"""
+/colorize - Окраска черно-белых изображений
+/change_color - Уменьшение количества цветов
+/start – Показать список доступных команд"""
 
 filt=Filter(bot)
 coloriz=Colorizer(bot,os.environ.get('ALGO_KEY'),'MyCollection')
@@ -46,6 +48,12 @@ def ask_for_image_clust(message):
 		
 @bot.message_handler(func=is_normal, content_types=["text"])
 def show_welcome(message):
+	if validate_stop(message,bot):
+		return
+	bot.send_message(message.chat.id, welcome_message)
+	
+@bot.message_handler(commands=['start'])
+def ask_for_image_clust(message):
 	if validate_stop(message,bot):
 		return
 	bot.send_message(message.chat.id, welcome_message)

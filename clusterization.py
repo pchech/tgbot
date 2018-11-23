@@ -23,7 +23,7 @@ class Cluster:
 			global parameters
 			parameters=int(message.text)
 			if parameters > 10:
-				msg=self.bot.send_message(message.chat.id,'Не больше 10 цветов')
+				msg=self.bot.send_message(message.chat.id,'Не больше 10 и не менее 1 цветов')
 				self.bot.register_next_step_handler(msg, self.ask_for_color)
 				return
 			msg=self.bot.send_message(message.chat.id,'Отправьте изображение')
