@@ -5,7 +5,7 @@ from modules import Filter
 filter = Filter()
 class Filt():
 	def __init__(self,bot):
-	self.bot=bot
+		self.bot=bot
 	def prepare_stop(self,message):
 		markup_cancel = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True)
 		cancel = telebot.types.KeyboardButton('stop')
