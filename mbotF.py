@@ -6,6 +6,7 @@ import json
 import os
 import io
 from modules import Filter, Colorizer, change_color
+from mtg import card_search,is_normal, is_mtg
 token = os.environ.get('TOKEN')
 server = Flask(__name__)
 WEBHOOK_HOST = 'cryptic-citadel-53949.herokuapp.com'
@@ -19,14 +20,13 @@ WEBHOOK_URL_BASE = "https://%s:%s" % (WEBHOOK_HOST, WEBHOOK_PORT)
 WEBHOOK_URL_PATH = "/%s/" % (token)
 
 bot = telebot.TeleBot(token)
-change=0
 filter = Filter()
 colorizer=Colorizer(os.environ.get('ALGO_KEY'),'MyCollection')
 welcome_message="""Бот обладает следующими возможностями:
 /filter - Применить один из 5 фильтров (черно-белое фото, сепия, негатив, наложение шума, изменение яркости)
 /colorize - Окраска черно-белых изображений"""
 
-c_types=['c','t','o','m','cmc','mana','is','r','e','in','f']
+
 @bot.message_handler(commands=['change'])
 def change_mod(message):
     global change
@@ -37,18 +37,9 @@ def change_mod(message):
         change = 0
         bot.send_message(message.chat.id, 'Включен обычный режим')
 
-def validate_type(type):
-    if type in c_types:
-        return True
-    else:
-        return False
+
 		
-def is_normal(message):
-    global change
-    return change == 0
-def is_mtg(message):
-    global change
-    return change == 1
+
 
 def validate_stop(message):
 		if message.text == 'stop':
@@ -222,52 +213,12 @@ def clusterization(message):
 	
 		
 @bot.message_handler(func=is_normal, content_types=["text"])
-def show_welcome(message): # Название функции не играет никакой роли, в принципе
+def show_welcome(message):
     bot.send_message(message.chat.id, welcome_message)
 
 @bot.message_handler(func=is_mtg, content_types=["text"])
-def card_search(message):
-    if '=' in message.text:
-        list_arg=message.text.split(' ')
-        params={'q':''}
-        rez=''
-        for arg in list_arg:
-            one_arg=arg.split('=')
-            if validate_type(one_arg[0]) is False:
-                bot.send_message(message.chat.id,'Неправильный аргумент')
-                return
-            params['q']=params['q']+':'.join(one_arg)+' '
-        url='https://api.scryfall.com/cards/search'
-        rsp=requests.get(url=url,params=params)
-        rsp=json.loads(rsp.text)
-        try:
-            card_list=rsp['data']
-            for card in card_list:
-                rez+=card['name']+'\n'
-            bot.send_message(message.chat.id,rez)
-        except KeyError:
-            bot.send_message(message.chat.id,'Неправильный запрос')
-    else:
-        url='https://api.scryfall.com/cards/named'
-        params={'fuzzy':message.text}
-        try:
-            rsp=requests.get(url=url,params=params)
-            rsp=json.loads(rsp.text)
-            img_url=rsp['image_uris']['normal']
-            img_rsp=requests.get(url=img_url)
-            img=img_rsp.content
-            bot.send_photo(message.chat.id,img)
-        except KeyError:
-            url='https://api.scryfall.com/cards/autocomplete'
-            params = {'q': message.text}
-            rsp = requests.get(url=url, params=params)
-            rsp=json.loads(rsp.text)
-            data=rsp['data']
-            if data==[]:
-                rez='Совпадений не найдено'
-            else:
-                rez='\n'.join(data)
-            bot.send_message(message.chat.id,rez)
+def mtg_search(message):
+    card_search(message,bot)
 	
 @server.route('/' + token, methods=['POST'])
 def getMessage():
