@@ -89,7 +89,7 @@ class Filt():
 		elif fil == 'Сепия':
 			img=filter.sepia(image_file,parameters)
 		elif fil == 'Негатив':
-			img=filter.negativ(image_file)
+			img=filter.negative(image_file)
 		elif fil == 'Изменить яркость':
 			img=filter.brightnessChange(image_file,parameters)
 		elif fil == 'Добавить шум':
