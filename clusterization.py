@@ -53,20 +53,20 @@ class Cluster:
 				img=self.change_color(image_file,parameters)
 				self.bot.send_photo(message.chat.id, img, reply_markup=markup)
 	
-	def change_color(self,img,n_color):
+	def	change_color(self,img,n_color):
 		image=imread(img)
 		image=img_as_float(image)
-		X = image.reshape(image.shape[0] * image.shape[1], 3)
+		X	=	image.reshape(image.shape[0]	*	image.shape[1],	3)
 		clt=KMeans(random_state=241,init='k-means++',n_clusters=n_color)
 		clt.fit(X)
 		res=clt.predict(X)
 		centre=clt.cluster_centers_
 		new_X=[]
-		for i in range(X.shape[0]):
+		for	i	in	range(X.shape[0]):
 			new_X.append(centre[res[i]])
-		new_image = np.array(new_X).reshape(image.shape[0], image.shape[1], 3)
-		n_img = scipy.misc.toimage(new_image)
-		imgByteArr = io.BytesIO()
-		n_img.save(imgByteArr,format = 'JPEG')
-		imgByteArr = imgByteArr.getvalue()
-		return imgByteArr
+		new_image	=	np.array(new_X).reshape(image.shape[0],	image.shape[1],	3)
+		n_img	=	scipy.misc.toimage(new_image)
+		imgByteArr	=	io.BytesIO()
+		n_img.save(imgByteArr,format	=	'JPEG')
+		imgByteArr	=	imgByteArr.getvalue()
+		return	imgByteArr

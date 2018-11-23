@@ -32,13 +32,14 @@ class Colorizer:
 				downloaded_file = self.bot.download_file(file.file_path)
 				img=self.action(downloaded_file)
 				self.bot.send_photo(message.chat.id, img, reply_markup=markup)
-	def action(self,data):
-        #mass = filepath.split("/")
-        self.client.file("data://.my/"+self.collection_name+"/testimg.png").put(data)
-        input = {
-            "image": "data://.my/"+self.collection_name+"/testimg.png"
-        }
-        algo = self.client.algo('deeplearning/ColorfulImageColorization/1.1.13')
-        out = algo.pipe(input).result
-        t800Bytes = self.client.file(out['output']).getBytes()
-        return t800Bytes
+				
+	def	action(self,data):
+								#mass	=	filepath.split("/")
+								self.client.file("data://.my/"+self.collection_name+"/testimg.png").put(data)
+								input	=	{
+												"image":	"data://.my/"+self.collection_name+"/testimg.png"
+								}
+								algo	=	self.client.algo('deeplearning/ColorfulImageColorization/1.1.13')
+								out	=	algo.pipe(input).result
+								t800Bytes	=	self.client.file(out['output']).getBytes()
+								return	t800Bytes
