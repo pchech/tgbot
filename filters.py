@@ -9,13 +9,13 @@ class Filt():
 	
 
 	def choose_filter(self,message):
-		markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard = True)
-		itembtn1 = telebot.types.KeyboardButton('bw')
-		itembtn2 = telebot.types.KeyboardButton('sepia')
-		itembtn3 = telebot.types.KeyboardButton('negative')
-		itembtn4 = telebot.types.KeyboardButton('brightness')
-		itembtn5 = telebot.types.KeyboardButton('noise')
-		itembtn6 = telebot.types.KeyboardButton('stop')
+		markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard = True,resize_keyboard=True)
+		itembtn1 = telebot.types.KeyboardButton('Черно-белое')
+		itembtn2 = telebot.types.KeyboardButton('Сепия')
+		itembtn3 = telebot.types.KeyboardButton('Негатив')
+		itembtn4 = telebot.types.KeyboardButton('Изменить яркость')
+		itembtn5 = telebot.types.KeyboardButton('Добавить шум')
+		itembtn6 = telebot.types.KeyboardButton('Остановить')
 		markup.row(itembtn1, itembtn2,itembtn3)
 		markup.row(itembtn4, itembtn5)
 		markup.row(itembtn6)
@@ -28,13 +28,13 @@ class Filt():
 		global fil
 		fil=message.text
 		markup_cancel = prepare_stop(message)
-		if fil == 'sepia':
+		if fil == 'Сепия':
 			msg=self.bot.send_message(message.chat.id,'Укажите глубину', reply_markup=markup_cancel)
 			self.bot.register_next_step_handler(msg, self.add_parameters)
-		elif fil in ('brightness','noise'):
+		elif fil in ('Изменить яркость','Добавить шум'):
 			msg=self.bot.send_message(message.chat.id,'Укажите параметр', reply_markup=markup_cancel)
 			self.bot.register_next_step_handler(msg, self.add_parameters)
-		elif fil in ('bw','negative'):
+		elif fil in ('Черно-белое','Негатив'):
 			msg=self.bot.send_message(message.chat.id,'Отправьте изображение', reply_markup=markup_cancel)
 			self.bot.register_next_step_handler(msg, self.make_filter)
 		else:
@@ -48,7 +48,7 @@ class Filt():
 		global parameters
 		try:
 			parameters=int(message.text)
-			if fil == 'noise':
+			if fil == 'Добавить шум':
 				parameters=abs(parameters)
 			msg=self.bot.send_message(message.chat.id,'Отправьте изображение')
 			self.bot.register_next_step_handler(msg, self.make_filter)
@@ -74,7 +74,7 @@ class Filt():
 			else:
 				downloaded_file = self.bot.download_file(file.file_path)
 				image_file = io.BytesIO(downloaded_file)
-				if fil in ('brightness','noise','sepia'):	
+				if fil in ('Изменить яркость','Добавить шум','Сепия'):	
 					img=self.filter_choice(image_file,parameters)
 				else:
 					img=self.filter_choice(image_file,None)
@@ -84,14 +84,14 @@ class Filt():
 				self.bot.send_photo(message.chat.id, imgByteArr,reply_markup = markup)
 
 	def filter_choice(self,image_file,parameters):
-		if fil == 'bw':
+		if fil == 'Черно-белое':
 			img=filter.black_white_filter(image_file)
-		elif fil == 'sepia':
-			img=filter.sepia(image_file,parameters)
-		elif fil == 'negative':
-			img=filter.negative(image_file)
-		elif fil == 'brightness':
-			img=filter.brightnessChange(image_file,parameters)
-		elif fil == 'noise':
-			img=filter.add_noise(image_file,parameters)
+		elif fil == 'Сепия':
+			img=filter.Сепия(image_file,parameters)
+		elif fil == 'Негатив':
+			img=filter.Негатив(image_file)
+		elif fil == 'Изменить яркость':
+			img=filter.Изменить яркостьChange(image_file,parameters)
+		elif fil == 'Добавить шум':
+			img=filter.add_Добавить шум(image_file,parameters)
 		return img

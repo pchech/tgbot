@@ -30,13 +30,11 @@ welcome_message="""Бот обладает следующими возможно
 
 filt=Filt(bot)
 coloriz=Coloriz(bot)
+
 @bot.message_handler(commands=['change'])
 def change_mod_process(message):
     change_mod(message,bot)
 
-
-
-	
 @bot.message_handler(commands=['filter'])
 def apply_filter(message):
 	filt.choose_filter(message)
