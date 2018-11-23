@@ -14,7 +14,7 @@ class Coloriz:
 		self.bot.register_next_step_handler(msg, self.colorize)
 
 	def colorize(self,message):
-		if validate_stop(message,bot):
+		if validate_stop(message,self.bot):
 			return
 		if message.photo is None:
 			msg=self.bot.send_message(message.chat.id,'Не изображение')
