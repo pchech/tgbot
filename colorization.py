@@ -7,7 +7,7 @@ class Colorizer:
 	def __init__(self,bot,api_key,collection_name):
 		self.bot=bot
 		self.client = Algorithmia.client(api_key)
-        self.collection_name = collection_name
+		self.collection_name = collection_name
 
 	def ask_for_image(self,message):
 		markup_cancel = prepare_stop(message)
