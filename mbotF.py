@@ -1,17 +1,22 @@
 import telebot
+import cherrypy
 from flask import Flask, request
+import requests
+import json
 import os
+import io
 from mtg import card_search,is_normal, is_mtg, change_mod
 from filters import Filt
 from colorization import Coloriz
 from clusterization import Cluster
-
 token = os.environ.get('TOKEN')
 server = Flask(__name__)
 WEBHOOK_HOST = 'cryptic-citadel-53949.herokuapp.com'
 WEBHOOK_PORT = 8443#8443  # 443, 80, 88 или 8443 (порт должен быть открыт!)
 WEBHOOK_LISTEN = '0.0.0.0'  # На некоторых серверах придется указывать такой же IP, что и выше
 
+WEBHOOK_SSL_CERT = './webhook_cert.pem'  # Путь к сертификату
+WEBHOOK_SSL_PRIV = './webhook_pkey.pem'  # Путь к приватному ключу
 
 WEBHOOK_URL_BASE = "https://%s:%s" % (WEBHOOK_HOST, WEBHOOK_PORT)
 WEBHOOK_URL_PATH = "/%s/" % (token)
@@ -25,7 +30,6 @@ welcome_message="""Бот обладает следующими возможно
 filt=Filt(bot)
 coloriz=Coloriz(bot)
 cluster=Cluster(bot)
-
 @bot.message_handler(commands=['change'])
 def change_mod_process(message):
     change_mod(message,bot)
