@@ -33,11 +33,11 @@ class Filt():
 		self.bot.register_next_step_handler(msg, self.welcome)
 		
 	def welcome(self,message):
-		if validate_stop(message):
+		if self.validate_stop(message):
 			return
 		global fil
 		fil=message.text
-		markup_cancel = prepare_stop(message)
+		markup_cancel = self.prepare_stop(message)
 		if fil == 'sepia':
 			msg=self.bot.send_message(message.chat.id,'Укажите глубину', reply_markup=markup_cancel)
 			self.bot.register_next_step_handler(msg, self.add_parameters)
@@ -53,7 +53,7 @@ class Filt():
 			return
 
 	def add_parameters(self,message):
-		if validate_stop(message):
+		if self.validate_stop(message):
 			return
 		global parameters
 		try:
@@ -68,7 +68,7 @@ class Filt():
 			return
 
 	def make_filter(self,message):
-		if validate_stop(message):
+		if self.validate_stop(message):
 			return
 		markup = telebot.types.ReplyKeyboardRemove(selective=False)
 		if message.photo is None:
