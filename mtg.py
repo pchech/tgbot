@@ -109,14 +109,12 @@ def card_search_advance(message,bot):
 	params['include_multilingual']=True
 	url='https://api.scryfall.com/cards/search'
 	rsp=requests.get(url=url,params=params)
-	bot.send_message(message.chat.id,rsp.url)
 	rsp=json.loads(rsp.text)
 	rez=''
-	
 	try:
 		card_list=rsp['data']
 		for card in card_list:
-			rez+=card['name']+'\n'
+			rez+=card['name']+'\t'+card['usd']+'\n'
 		bot.send_message(message.chat.id,rez)
 	except KeyError:
 		bot.send_message(message.chat.id,'Неправильный запрос')
@@ -131,6 +129,7 @@ def card_search(message,bot):
             img_rsp=requests.get(url=img_url)
             img=img_rsp.content
             bot.send_photo(message.chat.id,img)
+            bot.send_message(message.chat.id,rsp['usd'])
         except KeyError:
             url='https://api.scryfall.com/cards/autocomplete'
             params = {'q': message.text}
