@@ -38,7 +38,7 @@ def change_to_mtg(message,bot):
 
 def change_to_advance(message,bot):
 	msg=bot.send_message(message.chat.id, 'Включен MTG Advance режим')
-	markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard = True,resize_keyboard=True)
+	markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
 	itembtn1 = telebot.types.KeyboardButton('Color')
 	itembtn2 = telebot.types.KeyboardButton('Type')
 	itembtn3 = telebot.types.KeyboardButton('Oracle')
@@ -107,6 +107,7 @@ def card_search_advance(message,bot):
 	url='https://api.scryfall.com/cards/search'
 	rsp=requests.get(url=url,params=params)
 	rsp=json.loads(rsp.text)
+	rez=''
 	try:
 		card_list=rsp['data']
 		for card in card_list:
