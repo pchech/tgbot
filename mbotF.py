@@ -1,7 +1,7 @@
 import telebot
 from flask import Flask, request
 import os
-from mtg import card_search,is_normal, is_mtg, change_mod
+from mtg import card_search,is_normal, is_mtg, change_to_normal,change_to_advance,change_to_mtg
 from utils import validate_stop
 from filters import Filter
 from colorization import Colorizer
@@ -29,9 +29,17 @@ welcome_message="""Бот обладает следующими возможно
 filt=Filter(bot)
 coloriz=Colorizer(bot,os.environ.get('ALGO_KEY'),'MyCollection')
 cluster=Cluster(bot)
-@bot.message_handler(commands=['change'])
+@bot.message_handler(commands=['normalmode'])
 def change_mod_process(message):
-    change_mod(message,bot)
+    change_to_normal(message,bot)
+	
+@bot.message_handler(commands=['mtgmode'])
+def change_mod_process(message):
+    change_to_mtg(message,bot)
+	
+@bot.message_handler(commands=['mtgadvancemode'])
+def change_mod_process(message):
+    change_to_advance(message,bot)
 
 @bot.message_handler(commands=['filter'])
 def apply_filter(message):

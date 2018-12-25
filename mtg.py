@@ -1,22 +1,54 @@
 import requests
 import json
 import telebot
-c_types=['c','t','o','m','cmc','mana','is','r','e','in','f']
+c_types=['c','t','o','m','cmc','mana','is','r','e','in','f',
+'Color','Type','Oracle','Edition','Format','Cmc']
+map={'color':'c',
+	'type':'t',
+	'oracle':'o',
+	'edition':'e',
+	'format':'f',
+	'cmc':'cmc'}
 change=0
+params={'q':''}	
+def clear_param():
+	global params
+	params={'q':''}
+	markup = telebot.types.ReplyKeyboardRemove(selective=False)
+	bot.send_message(message.chat.id, 'Complete',reply_markup = markup)
+	
+def add_param(param):
+	global params
+	params['q']=params['q']+get_map(param)+':'
+	
+def add_params_value(value):
+	global params
+	params['q']=params['q']+value+' '
+	
+def get_map(type):
+	return map['type']
+
 
 #Смена режима работы бота
-def change_mod(message,bot):
-    global change
-    if change == 0:
-        change = 1
-        bot.send_message(message.chat.id, 'Включен MTG режим')
-    else:
-        change = 0
-        bot.send_message(message.chat.id, 'Включен обычный режим')
+def change_to_mtg(message,bot):
+	global change
+	if change != 1:
+		change = 1
+		bot.send_message(message.chat.id, 'Включен MTG режим')
+
+def change_to_advance(message,bot):
+	msg=bot.send_message(message.chat.id, 'Включен MTG Advance режим')
+	prepare_search(message,bot)
+		
+def change_to_normal(message, bot):
+	global change
+	if change != 0:
+		change = 0
+		bot.send_message(message.chat.id, 'Включен обычный режим')
 		
 #Проверка на валидность типа
 def validate_type(type):
-    if type in c_types:
+    if type.lower() in c_types:
         return True
     else:
         return False
@@ -31,29 +63,58 @@ def is_mtg(message):
     global change
     return change == 1
 	
+def is_mtg_advanced(message):
+	global change
+	return change == 2
+	
 #Поиск карты по названию
+
+def prepare_search(message,bot):
+	markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard = True,resize_keyboard=True)
+	itembtn1 = telebot.types.KeyboardButton('Сolor')
+	itembtn2 = telebot.types.KeyboardButton('Type')
+	itembtn3 = telebot.types.KeyboardButton('Oracle')
+	itembtn4 = telebot.types.KeyboardButton('Edition')
+	itembtn5 = telebot.types.KeyboardButton('Format')
+	itembtn6 = telebot.types.KeyboardButton('Cmc')
+	itembtn6 = telebot.types.KeyboardButton('Finish')
+	markup.row(itembtn1, itembtn2,itembtn3)
+	markup.row(itembtn4, itembtn5)
+	markup.row(itembtn6)
+	msg=bot.send_message(message.chat.id, 'Выберите фильтр',reply_markup = markup)
+	self.bot.register_next_step_handler(msg, self.advance_search)
+
+def advance_search(message,bot):
+	if message.text.lower() == 'finish':
+		card_search_advance(message,bot)
+		clear_param()
+	else:
+		if validate_type(message.text) is False:
+			msg=bot.send_message(message.chat.id, 'Неправильный фильтр')
+			self.bot.register_next_step_handler(msg, self.advance_search)
+		add_param(message.text)
+		msg=bot.send_message(message.chat.id, 'Введите значение')
+		self.bot.register_next_step_handler(msg, self.cardd_search)
+
+def cardd_search(message,bot):
+	add_params_value(message.text)
+	msg=bot.send_message(message.chat.id, 'Продолжим?',reply_markup = markup)
+	self.bot.register_next_step_handler(msg, self.advance_search)
+
+def card_search_advance(message,bot):
+	global params
+	url='https://api.scryfall.com/cards/search'
+	rsp=requests.get(url=url,params=params)
+	rsp=json.loads(rsp.text)
+	try:
+		card_list=rsp['data']
+		for card in card_list:
+			rez+=card['name']+'\n'
+		bot.send_message(message.chat.id,rez)
+		except KeyError:
+			bot.send_message(message.chat.id,'Неправильный запрос')
+	
 def card_search(message,bot):
-    if '=' in message.text:
-        list_arg=message.text.split(' ')
-        params={'q':''}
-        rez=''
-        for arg in list_arg:
-            one_arg=arg.split('=')
-            if validate_type(one_arg[0]) is False:
-                bot.send_message(message.chat.id,'Неправильный аргумент')
-                return
-            params['q']=params['q']+':'.join(one_arg)+' '
-        url='https://api.scryfall.com/cards/search'
-        rsp=requests.get(url=url,params=params)
-        rsp=json.loads(rsp.text)
-        try:
-            card_list=rsp['data']
-            for card in card_list:
-                rez+=card['name']+'\n'
-            bot.send_message(message.chat.id,rez)
-        except KeyError:
-            bot.send_message(message.chat.id,'Неправильный запрос')
-    else:
         url='https://api.scryfall.com/cards/named'
         params={'fuzzy':message.text}
         try:
