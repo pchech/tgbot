@@ -90,8 +90,8 @@ def advance_search(message,bot):
 		clear_param()
 	else:
 		if validate_type(message.text) is False:
-			msg=bot.send_message(message.chat.id, 'Неправильный фильтр')
-			bot.register_next_step_handler(msg, advance_search(message=message,bot=bot))
+			markup = telebot.types.ReplyKeyboardRemove(selective=False)
+			msg=bot.send_message(message.chat.id, 'Неправильный фильтр',reply_markup = markup)
 		add_param(message.text)
 		msg=bot.send_message(message.chat.id, 'Введите значение')
 		bot.register_next_step_handler(msg, cardd_search(message=message,bot=bot))
