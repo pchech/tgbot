@@ -91,15 +91,15 @@ def advance_search(message,bot):
 	else:
 		if validate_type(message.text) is False:
 			msg=bot.send_message(message.chat.id, 'Неправильный фильтр')
-			self.bot.register_next_step_handler(msg, self.advance_search)
+			bot.register_next_step_handler(msg, advance_search(message=message,bot=bot))
 		add_param(message.text)
 		msg=bot.send_message(message.chat.id, 'Введите значение')
-		self.bot.register_next_step_handler(msg, self.cardd_search)
+		bot.register_next_step_handler(msg, cardd_search(message=message,bot=bot))
 
 def cardd_search(message,bot):
 	add_params_value(message.text)
 	msg=bot.send_message(message.chat.id, 'Продолжим?',reply_markup = markup)
-	self.bot.register_next_step_handler(msg, self.advance_search)
+	bot.register_next_step_handler(msg, advance_search(message=message,bot=bot))
 
 def card_search_advance(message,bot):
 	global params
