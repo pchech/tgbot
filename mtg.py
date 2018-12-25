@@ -129,7 +129,10 @@ def card_search(message,bot):
             img_rsp=requests.get(url=img_url)
             img=img_rsp.content
             bot.send_photo(message.chat.id,img)
-            bot.send_message(message.chat.id,rsp['usd'])
+            try:
+                bot.send_message(message.chat.id,rsp['usd'])
+            except KeyError:
+                pass
         except KeyError:
             url='https://api.scryfall.com/cards/autocomplete'
             params = {'q': message.text}
