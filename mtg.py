@@ -38,7 +38,19 @@ def change_to_mtg(message,bot):
 
 def change_to_advance(message,bot):
 	msg=bot.send_message(message.chat.id, 'Включен MTG Advance режим')
-	prepare_search(message,bot)
+	markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard = True,resize_keyboard=True)
+	itembtn1 = telebot.types.KeyboardButton('Сolor')
+	itembtn2 = telebot.types.KeyboardButton('Type')
+	itembtn3 = telebot.types.KeyboardButton('Oracle')
+	itembtn4 = telebot.types.KeyboardButton('Edition')
+	itembtn5 = telebot.types.KeyboardButton('Format')
+	itembtn6 = telebot.types.KeyboardButton('Cmc')
+	itembtn6 = telebot.types.KeyboardButton('Finish')
+	markup.row(itembtn1, itembtn2,itembtn3)
+	markup.row(itembtn4, itembtn5)
+	markup.row(itembtn6)
+	msg=bot.send_message(message.chat.id, 'Выберите фильтр',reply_markup = markup)
+	self.bot.register_next_step_handler(msg, self.advance_search)
 		
 def change_to_normal(message, bot):
 	global change
@@ -69,20 +81,6 @@ def is_mtg_advanced(message):
 	
 #Поиск карты по названию
 
-def prepare_search(message,bot):
-	markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard = True,resize_keyboard=True)
-	itembtn1 = telebot.types.KeyboardButton('Сolor')
-	itembtn2 = telebot.types.KeyboardButton('Type')
-	itembtn3 = telebot.types.KeyboardButton('Oracle')
-	itembtn4 = telebot.types.KeyboardButton('Edition')
-	itembtn5 = telebot.types.KeyboardButton('Format')
-	itembtn6 = telebot.types.KeyboardButton('Cmc')
-	itembtn6 = telebot.types.KeyboardButton('Finish')
-	markup.row(itembtn1, itembtn2,itembtn3)
-	markup.row(itembtn4, itembtn5)
-	markup.row(itembtn6)
-	msg=bot.send_message(message.chat.id, 'Выберите фильтр',reply_markup = markup)
-	bot.register_next_step_handler(msg, advance_search(message=message,bot=bot))
 
 def advance_search(message,bot):
 	if message.text.lower() == 'finish':
@@ -92,14 +90,15 @@ def advance_search(message,bot):
 		if validate_type(message.text) is False:
 			markup = telebot.types.ReplyKeyboardRemove(selective=False)
 			msg=bot.send_message(message.chat.id, 'Неправильный фильтр',reply_markup = markup)
+			self.bot.register_next_step_handler(msg, self.advance_search)
 		add_param(message.text)
 		msg=bot.send_message(message.chat.id, 'Введите значение')
-		bot.register_next_step_handler(msg, cardd_search(message=message,bot=bot))
+		self.bot.register_next_step_handler(msg, self.cardd_search)
 
 def cardd_search(message,bot):
 	add_params_value(message.text)
 	msg=bot.send_message(message.chat.id, 'Продолжим?')
-	bot.register_next_step_handler(msg, advance_search(message=message,bot=bot))
+	self.bot.register_next_step_handler(msg, self.advance_search)
 
 def card_search_advance(message,bot):
 	global params
