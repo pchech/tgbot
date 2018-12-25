@@ -111,8 +111,8 @@ def card_search_advance(message,bot):
 		for card in card_list:
 			rez+=card['name']+'\n'
 		bot.send_message(message.chat.id,rez)
-		except KeyError:
-			bot.send_message(message.chat.id,'Неправильный запрос')
+	except KeyError:
+		bot.send_message(message.chat.id,'Неправильный запрос')
 	
 def card_search(message,bot):
         url='https://api.scryfall.com/cards/named'
