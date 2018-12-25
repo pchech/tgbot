@@ -104,6 +104,7 @@ def cardd_search(message,bot):
 
 def card_search_advance(message,bot):
 	global params
+	params['include_multilingual']=True
 	url='https://api.scryfall.com/cards/search'
 	rsp=requests.get(url=url,params=params)
 	rsp=json.loads(rsp.text)
