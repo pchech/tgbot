@@ -50,7 +50,7 @@ def change_to_advance(message,bot):
 	markup.row(itembtn4, itembtn5)
 	markup.row(itembtn6)
 	msg=bot.send_message(message.chat.id, 'Выберите фильтр',reply_markup = markup)
-	self.bot.register_next_step_handler(msg, self.advance_search)
+	bot.register_next_step_handler(msg, advance_search,{'bot' = bot})
 		
 def change_to_normal(message, bot):
 	global change
@@ -90,15 +90,15 @@ def advance_search(message,bot):
 		if validate_type(message.text) is False:
 			markup = telebot.types.ReplyKeyboardRemove(selective=False)
 			msg=bot.send_message(message.chat.id, 'Неправильный фильтр',reply_markup = markup)
-			self.bot.register_next_step_handler(msg, self.advance_search)
+			bot.register_next_step_handler(msg, advance_search,{'bot' = bot})
 		add_param(message.text)
 		msg=bot.send_message(message.chat.id, 'Введите значение')
-		self.bot.register_next_step_handler(msg, self.cardd_search)
+		bot.register_next_step_handler(msg, cardd_search, {'bot' = bot})
 
 def cardd_search(message,bot):
 	add_params_value(message.text)
 	msg=bot.send_message(message.chat.id, 'Продолжим?')
-	self.bot.register_next_step_handler(msg, self.advance_search)
+	bot.register_next_step_handler(msg, advance_search,{'bot' = bot})
 
 def card_search_advance(message,bot):
 	global params
