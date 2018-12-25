@@ -82,7 +82,7 @@ def prepare_search(message,bot):
 	markup.row(itembtn4, itembtn5)
 	markup.row(itembtn6)
 	msg=bot.send_message(message.chat.id, 'Выберите фильтр',reply_markup = markup)
-	bot.register_next_step_handler(msg, advance_search(bot=bot))
+	bot.register_next_step_handler(msg, advance_search(message=message,bot=bot))
 
 def advance_search(message,bot):
 	if message.text.lower() == 'finish':
