@@ -8,7 +8,8 @@ from colorization import Colorizer
 from clusterization import Cluster
 token = os.environ.get('TOKEN')
 server = Flask(__name__)
-WEBHOOK_HOST = 'cryptic-citadel-53949.herokuapp.com'
+#WEBHOOK_HOST = 'cryptic-citadel-53949.herokuapp.com'
+WEBHOOK_HOST = 'testmtgbot.herokuapp.com'
 WEBHOOK_PORT = 8443#8443  # 443, 80, 88 или 8443 (порт должен быть открыт!)
 WEBHOOK_LISTEN = '0.0.0.0'  # На некоторых серверах придется указывать такой же IP, что и выше
 
