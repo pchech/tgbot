@@ -23,6 +23,8 @@ def add_param(param):
 	
 def add_params_value(value):
 	global params
+	if ' ' in value:
+		value='"'+value+'"'
 	params['q']=params['q']+value+' '
 	
 def get_map(type):
