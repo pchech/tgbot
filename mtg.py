@@ -28,7 +28,7 @@ def add_params_value(value):
 	params['q']=params['q']+value+' '
 	
 def get_map(type):
-	return map[type]
+	return map[type.lower()]
 
 
 #Смена режима работы бота
