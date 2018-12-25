@@ -98,7 +98,7 @@ def advance_search(message,bot):
 
 def cardd_search(message,bot):
 	add_params_value(message.text)
-	msg=bot.send_message(message.chat.id, 'Продолжим?',reply_markup = markup)
+	msg=bot.send_message(message.chat.id, 'Продолжим?')
 	bot.register_next_step_handler(msg, advance_search(message=message,bot=bot))
 
 def card_search_advance(message,bot):
