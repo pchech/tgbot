@@ -11,11 +11,11 @@ map={'color':'c',
 	'cmc':'cmc'}
 change=0
 params={'q':''}	
-def clear_param(bot):
+def clear_param(chat_id,bot):
 	global params
 	params={'q':''}
 	markup = telebot.types.ReplyKeyboardRemove(selective=False)
-	bot.send_message(message.chat.id, 'Complete',reply_markup = markup)
+	bot.send_message(chat_id, 'Complete',reply_markup = markup)
 	
 def add_param(param):
 	global params
@@ -86,7 +86,7 @@ def advance_search(message,bot):
 	bot=bot['bot']
 	if message.text.lower() == 'finish':
 		card_search_advance(message,bot)
-		clear_param(bot)
+		clear_param(message.chat.id, bot)
 	else:
 		if validate_type(message.text) is False:
 			msg=bot.send_message(message.chat.id, 'Неправильный фильтр')
