@@ -39,7 +39,7 @@ def change_to_mtg(message,bot):
 def change_to_advance(message,bot):
 	msg=bot.send_message(message.chat.id, 'Включен MTG Advance режим')
 	markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard = True,resize_keyboard=True)
-	itembtn1 = telebot.types.KeyboardButton('Сolor')
+	itembtn1 = telebot.types.KeyboardButton('Color')
 	itembtn2 = telebot.types.KeyboardButton('Type')
 	itembtn3 = telebot.types.KeyboardButton('Oracle')
 	itembtn4 = telebot.types.KeyboardButton('Edition')
@@ -89,12 +89,12 @@ def advance_search(message,bot):
 		clear_param()
 	else:
 		if validate_type(message.text) is False:
-			markup = telebot.types.ReplyKeyboardRemove(selective=False)
-			msg=bot.send_message(message.chat.id, 'Неправильный фильтр',reply_markup = markup)
+			msg=bot.send_message(message.chat.id, 'Неправильный фильтр')
 			bot.register_next_step_handler(msg, advance_search,{'bot' : bot})
-		add_param(message.text)
-		msg=bot.send_message(message.chat.id, 'Введите значение')
-		bot.register_next_step_handler(msg, cardd_search, {'bot' : bot})
+		else:
+			add_param(message.text)
+			msg=bot.send_message(message.chat.id, 'Введите значение')
+			bot.register_next_step_handler(msg, cardd_search, {'bot' : bot})
 
 def cardd_search(message,bot):
 	bot=bot['bot']
