@@ -80,7 +80,7 @@ def getMessage():
 @server.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url='https://testmtgbot.herokuapp.com'+WEBHOOK_URL_PATH)
+    bot.set_webhook(url='https://testmtgbot.herokuapp.com/' + token)
     return "!", 200
 
 
