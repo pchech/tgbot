@@ -83,6 +83,7 @@ def is_mtg_advanced(message):
 
 
 def advance_search(message,bot):
+	bot=bot['bot']
 	if message.text.lower() == 'finish':
 		card_search_advance(message,bot)
 		clear_param()
@@ -96,6 +97,7 @@ def advance_search(message,bot):
 		bot.register_next_step_handler(msg, cardd_search, {'bot' : bot})
 
 def cardd_search(message,bot):
+	bot=bot['bot']
 	add_params_value(message.text)
 	msg=bot.send_message(message.chat.id, 'Продолжим?')
 	bot.register_next_step_handler(msg, advance_search,{'bot' : bot})
