@@ -2,7 +2,7 @@ import requests
 import json
 import telebot
 c_types=['c','t','o','m','cmc','mana','is','r','e','in','f',
-'Color','Type','Oracle','Edition','Format','Cmc']
+'color','type','oracle','edition','format','cmc']
 map={'color':'c',
 	'type':'t',
 	'oracle':'o',
