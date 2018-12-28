@@ -115,7 +115,10 @@ def card_search_advance(message,bot):
 	try:
 		card_list=rsp['data']
 		for card in card_list:
-			rez+=card['name']+'\t'+card['usd']+'\n'
+			try:
+				rez+=card['name']+'\t'+card['usd']+'\n'
+			except KeyError:
+				pass
 		bot.send_message(message.chat.id,rez)
 	except KeyError:
 		bot.send_message(message.chat.id,'Неправильный запрос')
