@@ -109,6 +109,7 @@ def card_search_advance(message,bot):
 	params['include_multilingual']=True
 	url='https://api.scryfall.com/cards/search'
 	rsp=requests.get(url=url,params=params)
+	bot.send_message(message.chat.id,rsp.url)
 	rsp=json.loads(rsp.text)
 	rez=''
 	try:
