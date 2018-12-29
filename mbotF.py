@@ -1,7 +1,7 @@
 import telebot
 from flask import Flask, request
 import os
-from mtg import card_search,is_normal, is_mtg, change_to_normal,change_to_advance,change_to_mtg,MtgFinder
+from mtg import MtgFinder
 from utils import validate_stop
 from filters import Filter
 from colorization import Colorizer
