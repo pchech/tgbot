@@ -143,7 +143,7 @@ def card_search(message,bot):
 			for row in mtg_records:
 				bot.send_photo(message.chat.id,bytes(row[2]))
 		else:
-			print_card_list(bot,message):
+			print_card_list(bot,message)
 	finally:
 		if (conn):
 			cursor.close()
