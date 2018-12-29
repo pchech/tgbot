@@ -1,5 +1,6 @@
 import requests
 import json
+import psycopg2
 import telebot
 c_types=['c','t','o','m','cmc','mana','is','r','e','in','f',
 'color','type','oracle','edition','format','cmc']
