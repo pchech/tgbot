@@ -182,7 +182,6 @@ class MtgFinder:
 		keyboard = telebot.types.InlineKeyboardMarkup()
 		callback_button = telebot.types.InlineKeyboardButton(text="Показать следующую страницу", callback_data="next")
 		keyboard.add(callback_button)
-		self.bot.send_message(call.message.chat.id, 'Callback')
 		if call.message:
 			if call.data == "next":
 				rez=''
