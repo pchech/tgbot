@@ -70,6 +70,10 @@ def ask_for_image_clust(message):
 @bot.message_handler(func=is_mtg, content_types=["text"])
 def mtg_search(message):
     mtgfinder.card_search(message)
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_inline(call):
+	mtgfinder.callback_inline(call)
 	
 @server.route('/' + token, methods=['POST'])
 def getMessage():

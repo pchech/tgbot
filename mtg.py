@@ -177,7 +177,7 @@ class MtgFinder:
 				break
 		self.bot.send_message(message.chat.id, rez, reply_markup = keyboard)
 	
-	@self.bot.callback_query_handler(func=lambda call: True)
+	
 	def callback_inline(self,call):
 		self.bot.send_message(call.message.chat.id, 'Callback')
 		if call.message:
