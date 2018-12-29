@@ -36,7 +36,7 @@ class MtgFinder:
 
 
 #Смена режима работы бота
-	def change_to_mtg(message):
+	def change_to_mtg(self,message):
 		if self.change != 1:
 			self.change = 1
 			self.bot.send_message(message.chat.id, 'Включен MTG режим')
