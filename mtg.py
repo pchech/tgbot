@@ -133,7 +133,7 @@ class MtgFinder:
 			if cursor.rowcount == 0:
 				self.bot.send_message(message.chat.id,'Не найдено')
 			elif cursor.rowcount < 3:
-				for row in mtg_records:
+				for row in self.mtg_records:
 					self.bot.send_photo(message.chat.id,bytes(row[2]))
 			else:
 				self.print_card_list(message)
