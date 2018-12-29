@@ -177,8 +177,8 @@ def card_search(message,bot):
 #            bot.send_message(message.chat.id,rez)
 def print_card_list(bot,message):
 	global mtg_records
-	keyboard = types.InlineKeyboardMarkup()
-	callback_button = types.InlineKeyboardButton(text="Показать следующую страницу", callback_data="next")
+	keyboard = telebot.types.InlineKeyboardMarkup()
+	callback_button = telebot.types.InlineKeyboardButton(text="Показать следующую страницу", callback_data="next")
 	keyboard.add(callback_button)
 	rez=''
 	for i in range (len(mtg_records)):
