@@ -1,7 +1,7 @@
 import telebot
 from flask import Flask, request
 import os
-from mtg import card_search,is_normal, is_mtg, change_to_normal,change_to_advance,change_to_mtg
+from mtg import card_search,is_normal, is_mtg, change_to_normal,change_to_advance,change_to_mtg,MtgFinder
 from utils import validate_stop
 from filters import Filter
 from colorization import Colorizer
@@ -26,21 +26,21 @@ welcome_message="""Бот обладает следующими возможно
 /colorize - Окраска черно-белых изображений
 /change_color - Уменьшение количества цветов
 /start – Показать список доступных команд"""
-
+mtgfinder = MtgFinder(bot)
 filt=Filter(bot)
 coloriz=Colorizer(bot,os.environ.get('ALGO_KEY'),'MyCollection')
 cluster=Cluster(bot)
 @bot.message_handler(commands=['normalmode'])
 def change_mod_process(message):
-    change_to_normal(message,bot)
+    mtgfinder.change_to_normal(message)
 	
 @bot.message_handler(commands=['mtgmode'])
 def change_mod_process(message):
-    change_to_mtg(message,bot)
+    mtgfinder.change_to_mtg(message)
 	
 @bot.message_handler(commands=['mtgadvancemode'])
 def change_mod_process(message):
-    change_to_advance(message,bot)
+    mtgfinder.change_to_advance(message)
 
 @bot.message_handler(commands=['filter'])
 def apply_filter(message):
@@ -69,7 +69,7 @@ def ask_for_image_clust(message):
 
 @bot.message_handler(func=is_mtg, content_types=["text"])
 def mtg_search(message):
-    card_search(message,bot)
+    mtgfinder.card_search(message)
 	
 @server.route('/' + token, methods=['POST'])
 def getMessage():
