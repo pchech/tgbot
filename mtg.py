@@ -125,17 +125,22 @@ def card_search_advance(message,bot):
 		bot.send_message(message.chat.id,'Неправильный запрос')
 	
 def card_search(message,bot):
-	conn=psycopg2.connect(user = "ptefqjhdtyrgya",
+	try:
+		conn=psycopg2.connect(user = "ptefqjhdtyrgya",
                       password = "d06f1f573d5919c73c80143e18ea9883e1760412d455a00b901b67f5ac40fcd8",
                       host = "ec2-54-247-161-208.eu-west-1.compute.amazonaws.com",
                       port = "5432",
                       database="de7cvsaumikoei")
-	cursor = conn.cursor()
-	select_Query = "select image from mtg.card_export where name = %s"
-	cursor.execute(select_Query,(message.text))
-	mtg_records = cursor.fetchall()
-	for row in mtg_records:
-		bot.send_photo(message.chat.id,bytes(row[0]))
+		cursor = conn.cursor()
+		select_Query = "select image from mtg.card_export where name = %s"
+		cursor.execute(select_Query,(message.text,))
+		mtg_records = cursor.fetchall()
+		for row in mtg_records:
+			bot.send_photo(message.chat.id,bytes(row[0]))
+	finally:
+		if (conn):
+			cursor.close()
+			conn.close()
 #        url='https://api.scryfall.com/cards/named'
 #        params={'fuzzy':message.text}
 #        try:
