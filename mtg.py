@@ -190,6 +190,7 @@ def print_card_list(bot,message):
 	
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
+	bot.send_message(message.chat.id, 'Callback')
 	if call.message:
 		if call.data == "next":
 			global mtg_records
