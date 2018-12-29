@@ -132,7 +132,7 @@ def card_search(message,bot):
                       port = "5432",
                       database="de7cvsaumikoei")
 		cursor = conn.cursor()
-		select_Query = "select image from mtg.card_export where name = %s"
+		select_Query = "select image from mtg.card_export where printed_name = %s"
 		cursor.execute(select_Query,(message.text,))
 		mtg_records = cursor.fetchall()
 		for row in mtg_records:
