@@ -132,7 +132,7 @@ def card_search(message,bot):
                       port = "5432",
                       database="de7cvsaumikoei")
 		cursor = conn.cursor()
-		select_Query = "select image from mtg.card_export where printed_name like %(like)s escape '='"
+		select_Query = "select image from mtg.card_export where lower(printed_name) like lower(%(like)s) escape '='"
 		cursor.execute(select_Query, dict(like= '%'+message.text+'%'))
 		mtg_records = cursor.fetchall()
 		for row in mtg_records:
