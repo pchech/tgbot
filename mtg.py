@@ -134,7 +134,7 @@ def card_search(message,bot):
 	cursor.execute(select_Query,(message.text))
 	mtg_records = cursor.fetchall()
 	for row in mtg_records:
-		bot.send_photo(message.chat.id,bytes(row[0])
+		bot.send_photo(message.chat.id,bytes(row[0]))
 #        url='https://api.scryfall.com/cards/named'
 #        params={'fuzzy':message.text}
 #        try:
