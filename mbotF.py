@@ -55,7 +55,7 @@ def ask_for_image_clust(message):
 	cluster.ask_for_image_clust(message)
 	
 		
-@bot.message_handler(func=is_normal, content_types=["text"])
+@bot.message_handler(func=mtgfinder.is_normal, content_types=["text"])
 def show_welcome(message):
 	if validate_stop(message,bot):
 		return
@@ -67,7 +67,7 @@ def ask_for_image_clust(message):
 		return
 	bot.send_message(message.chat.id, welcome_message)
 
-@bot.message_handler(func=is_mtg, content_types=["text"])
+@bot.message_handler(func=mtgfinder.is_mtg, content_types=["text"])
 def mtg_search(message):
     mtgfinder.card_search(message)
 
