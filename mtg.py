@@ -13,6 +13,7 @@ map={'color':'c',
 change=0
 params={'q':''}
 mtg_records=[]
+bot = telebot.TeleBot(token)
 def clear_param(chat_id,bot):
 	global params
 	params={'q':''}
