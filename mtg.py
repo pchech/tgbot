@@ -126,17 +126,27 @@ def card_search_advance(message,bot):
 	
 def card_search(message,bot):
 	try:
+		rez=''
 		conn=psycopg2.connect(user = "ptefqjhdtyrgya",
                       password = "d06f1f573d5919c73c80143e18ea9883e1760412d455a00b901b67f5ac40fcd8",
                       host = "ec2-54-247-161-208.eu-west-1.compute.amazonaws.com",
                       port = "5432",
                       database="de7cvsaumikoei")
 		cursor = conn.cursor()
-		select_Query = "select image from mtg.card_export where lower(printed_name) like lower(%(like)s) escape '='"
+		select_Query = "select printed_name,color,image from mtg.card_export where lower(printed_name) like lower(%(like)s) escape '='"
 		cursor.execute(select_Query, dict(like= '%'+message.text+'%'))
 		mtg_records = cursor.fetchall()
-		for row in mtg_records:
-			bot.send_photo(message.chat.id,bytes(row[0]))
+		if cursor.rowcount == 0:
+			bot.send_message('Не найдено')
+		elif cursor.rowcount < 3:
+			for row in mtg_records:
+				bot.send_photo(message.chat.id,bytes(row[2]))
+		else:
+			for row in mtg_records:
+				rez += row[0] + ' | ' + row[1] + '\n'
+			bot.send_message(message.chat.id, rez)
+				
+				
 	finally:
 		if (conn):
 			cursor.close()
