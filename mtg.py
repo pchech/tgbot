@@ -2,6 +2,7 @@ import requests
 import json
 import psycopg2
 import telebot
+import os
 c_types=['c','t','o','m','cmc','mana','is','r','e','in','f',
 'color','type','oracle','edition','format','cmc']
 map={'color':'c',
@@ -13,6 +14,7 @@ map={'color':'c',
 change=0
 params={'q':''}
 mtg_records=[]
+token = os.environ.get('TOKEN')
 bot = telebot.TeleBot(token)
 def clear_param(chat_id,bot):
 	global params
