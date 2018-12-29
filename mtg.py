@@ -11,7 +11,8 @@ map={'color':'c',
 	'format':'f',
 	'cmc':'cmc'}
 change=0
-params={'q':''}	
+params={'q':''}
+mtg_records=[]
 def clear_param(chat_id,bot):
 	global params
 	params={'q':''}
@@ -126,27 +127,23 @@ def card_search_advance(message,bot):
 	
 def card_search(message,bot):
 	try:
-		rez=''
 		conn=psycopg2.connect(user = "ptefqjhdtyrgya",
                       password = "d06f1f573d5919c73c80143e18ea9883e1760412d455a00b901b67f5ac40fcd8",
                       host = "ec2-54-247-161-208.eu-west-1.compute.amazonaws.com",
                       port = "5432",
                       database="de7cvsaumikoei")
 		cursor = conn.cursor()
-		select_Query = "select printed_name,color,image from mtg.card_export where lower(printed_name) like lower(%(like)s) escape '='"
+		select_Query = "select printed_name,color,image from mtg.card_export where lower(printed_name) like lower(%(like)s) escape '=' order by color"
 		cursor.execute(select_Query, dict(like= '%'+message.text+'%'))
+		global mtg_records
 		mtg_records = cursor.fetchall()
 		if cursor.rowcount == 0:
-			bot.send_message('Не найдено')
+			bot.send_message(message.chat.id,'Не найдено')
 		elif cursor.rowcount < 3:
 			for row in mtg_records:
 				bot.send_photo(message.chat.id,bytes(row[2]))
 		else:
-			for row in mtg_records:
-				rez += row[0] + ' | ' + row[1] + '\n'
-			bot.send_message(message.chat.id, rez)
-				
-				
+			print_card_list(bot,message):
 	finally:
 		if (conn):
 			cursor.close()
@@ -175,3 +172,28 @@ def card_search(message,bot):
 #            else:
 #                rez='\n'.join(data)
 #            bot.send_message(message.chat.id,rez)
+def print_card_list(bot,message):
+	global mtg_records
+	keyboard = types.InlineKeyboardMarkup()
+	callback_button = types.InlineKeyboardButton(text="Показать следующую страницу", callback_data="next")
+	keyboard.add(callback_button)
+	rez=''
+	for i in range (len(mtg_records)):
+		rez += mtg_records[0][0] + ' | ' + mtg_records[0][1] + '\n'
+		mtg_records.pop(0)
+		if i == 19:
+			break
+	bot.send_message(message.chat.id, rez, reply_markup = keyboard)
+	
+@bot.callback_query_handler(func=lambda call: True)
+def callback_inline(call):
+	if call.message:
+		if call.data == "next":
+			global mtg_records
+			rez=''
+			for i in range (len(mtg_records)):
+				rez += mtg_records[0][0] + ' | ' + mtg_records[0][1] + '\n'
+				mtg_records.pop(0)
+				if i == 19:
+					break
+			bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=rez)
