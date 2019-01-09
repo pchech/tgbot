@@ -129,14 +129,14 @@ class MtgFinder:
 			cursor = conn.cursor()
 			select_Query = """select distinct string_agg(c1.printed_name,'\\'),c1.color,c1.image,string_agg(c1.name,'\\')
 			from mtg.card_export c1
-			where c1.oracle_id in
-			(select c2.oracle_id
+			where c1.id in
+			(select c2.id
 			from mtg.card_export c2
 			where (lower(c2.printed_name) like lower(%(like)s) escape '='
 			or
 			lower(c2.name) like lower(%(like)s) escape '=')
 			)
-			group by c1.oracle_id,c1.color,c1.image
+			group by c1.id,c1.color,c1.image
 			order by c1.color"""
 			cursor.execute(select_Query, dict(like= '%'+message.text+'%'))
 			self.mtg_records = cursor.fetchall()
