@@ -136,6 +136,7 @@ class MtgFinder:
 			)
 			and c1.name = c3.name
 			and c3.lang = 'en'
+			and c1.set_id = c3.set_id
 			group by c1.id,c1.color,c3.image
 			order by c1.color"""
 			cursor.execute(select_Query, dict(like= '%'+message.text+'%'))
