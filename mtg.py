@@ -132,9 +132,7 @@ class MtgFinder:
 			where c1.id in
 			(select c2.id
 			from mtg.card_export c2
-			where (lower(c2.printed_name) like lower(%(like)s) escape '='
-			or
-			lower(c2.name) like lower(%(like)s) escape '=')
+			where lower(c2.printed_name) like lower(%(like)s) escape '='
 			)
 			and c1.name = c3.name
 			and c3.lang = 'en'
