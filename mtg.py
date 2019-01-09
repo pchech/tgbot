@@ -177,7 +177,7 @@ class MtgFinder:
 			if i == 19:
 				flag = True
 				break
-		if !flag:
+		if flag is False:
 			self.bot.send_message(message.chat.id, rez)
 		else:
 			self.bot.send_message(message.chat.id, rez, reply_markup = keyboard)
