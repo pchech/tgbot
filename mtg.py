@@ -55,7 +55,7 @@ class MtgFinder:
 		markup.row(itembtn4, itembtn5)
 		markup.row(itembtn6)
 		msg=self.bot.send_message(message.chat.id, 'Выберите фильтр',reply_markup = markup)
-		self.bot.register_next_step_handler(msg, advance_search)
+		self.bot.register_next_step_handler(msg, self.advance_search)
 		
 	def change_to_normal(self,message):
 		if self.change != 0:
@@ -90,16 +90,16 @@ class MtgFinder:
 		else:
 			if self.validate_type(message.text) is False:
 				msg=self.bot.send_message(message.chat.id, 'Неправильный фильтр')
-				self.bot.register_next_step_handler(msg, advance_search)
+				self.bot.register_next_step_handler(msg, self.advance_search)
 			else:
 				self.add_param(message.text)
 				msg=self.bot.send_message(message.chat.id, 'Введите значение')
-				self.bot.register_next_step_handler(msg, cardd_search)
+				self.bot.register_next_step_handler(msg, self.cardd_search)
 
 	def cardd_search(self,message):
 		self.add_params_value(message.text)
 		msg=self.bot.send_message(message.chat.id, 'Продолжим?')
-		self.bot.register_next_step_handler(msg, advance_search)
+		self.bot.register_next_step_handler(msg, self.advance_search)
 
 	def card_search_advance(self,message):
 		self.params['include_multilingual']=True
