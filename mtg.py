@@ -127,12 +127,14 @@ class MtgFinder:
 						  port = "5432",
 						  database="de7cvsaumikoei")
 			cursor = conn.cursor()
-			select_Query = """select distinct string_agg(c1.printed_name,'\\'),c1.color,c1.image
+			select_Query = """select distinct string_agg(c1.printed_name,'\\'),c1.color,c1.image,string_agg(c1.name,'\\')
 			from mtg.card_export c1
 			where c1.oracle_id in
 			(select c2.oracle_id
 			from mtg.card_export c2
-			where lower(c2.printed_name) like lower(%(like)s) escape '='
+			where (lower(c2.printed_name) like lower(%(like)s) escape '='
+			or
+			lower(c2.name) like lower(%(like)s) escape '=')
 			)
 			group by c1.oracle_id,c1.color,c1.image
 			order by c1.color"""
@@ -180,7 +182,10 @@ class MtgFinder:
 		rez=''
 		flag = False
 		for i in range (len(self.mtg_records)):
-			rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + '\n'
+			if self.mtg_records[0][0] != self.mtg_records[0][3]:
+				rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + '\n'
+			else:
+				rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + '\n'
 			self.mtg_records.pop(0)
 			if i == 19:
 				flag = True
