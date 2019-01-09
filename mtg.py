@@ -127,8 +127,8 @@ class MtgFinder:
 						  port = "5432",
 						  database="de7cvsaumikoei")
 			cursor = conn.cursor()
-			select_Query = """select distinct string_agg(c1.printed_name,'\\'),c1.color,c1.image,string_agg(c1.name,'\\')
-			from mtg.card_export c1
+			select_Query = """select string_agg(c1.printed_name,'\\'),c1.color,c3.image,string_agg(c1.name,'\\')
+			from mtg.card_export c1, mtg.card_export c3
 			where c1.id in
 			(select c2.id
 			from mtg.card_export c2
@@ -136,7 +136,9 @@ class MtgFinder:
 			or
 			lower(c2.name) like lower(%(like)s) escape '=')
 			)
-			group by c1.id,c1.color,c1.image
+			and c1.name = c3.name
+			and c3.lang = 'en'
+			group by c1.id,c1.color,c3.image
 			order by c1.color"""
 			cursor.execute(select_Query, dict(like= '%'+message.text+'%'))
 			self.mtg_records = cursor.fetchall()
