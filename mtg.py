@@ -170,12 +170,17 @@ class MtgFinder:
 		callback_button = telebot.types.InlineKeyboardButton(text="Показать следующую страницу", callback_data="next")
 		keyboard.add(callback_button)
 		rez=''
+		flag = False
 		for i in range (len(self.mtg_records)):
 			rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + '\n'
 			self.mtg_records.pop(0)
 			if i == 19:
+				flag = True
 				break
-		self.bot.send_message(message.chat.id, rez, reply_markup = keyboard)
+		if !flag:
+			self.bot.send_message(message.chat.id, rez)
+		else:
+			self.bot.send_message(message.chat.id, rez, reply_markup = keyboard)
 	
 	
 	def callback_inline(self,call):
@@ -190,7 +195,7 @@ class MtgFinder:
 					self.mtg_records.pop(0)
 					if i == 19:
 						break
-				if len(self.mtg_records) <=20:
+				if len(self.mtg_records) == 0:
 					self.bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=rez)
 				else:
 					self.bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=rez, reply_markup = keyboard)
