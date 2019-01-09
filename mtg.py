@@ -19,7 +19,7 @@ class MtgFinder:
 	def __init__(self,bot):
 		self.bot=bot
 	def clear_param(self,chat_id):
-		slef.params={'q':''}
+		self.params={'q':''}
 		markup = telebot.types.ReplyKeyboardRemove(selective=False)
 		self.bot.send_message(chat_id, 'Complete',reply_markup = markup)
 	
