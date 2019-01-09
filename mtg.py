@@ -127,7 +127,14 @@ class MtgFinder:
 						  port = "5432",
 						  database="de7cvsaumikoei")
 			cursor = conn.cursor()
-			select_Query = "select printed_name,color,image from mtg.card_export where lower(printed_name) like lower(%(like)s) escape '=' order by color"
+			select_Query = """select distinct c1.printed_name,c1.color,c1.image
+			from mtg.card_export c1
+			where c1.oracle_id in
+			(select c2.oracle_id
+			from mtg.card_export c2
+			where lower(c2.printed_name) like lower(%(like)s) escape '='
+			)
+			order by c1.color"""
 			cursor.execute(select_Query, dict(like= '%'+message.text+'%'))
 			self.mtg_records = cursor.fetchall()
 			if cursor.rowcount == 0:
