@@ -104,7 +104,7 @@ class MtgFinder:
 	def card_search_advance(self,message):
 		self.params['include_multilingual']=True
 		url='https://api.scryfall.com/cards/search'
-		rsp=requests.get(url=url,params=params)
+		rsp=requests.get(url=url,params=self.params)
 		#self.bot.send_message(message.chat.id,rsp.url)
 		rsp=json.loads(rsp.text)
 		rez=''
