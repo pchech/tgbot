@@ -127,8 +127,8 @@ class MtgFinder:
 						  port = "5432",
 						  database="de7cvsaumikoei")
 			cursor = conn.cursor()
-			select_Query = """select string_agg(c1.printed_name,'\\'),c1.color,c3.image,string_agg(c1.name,'\\'), c1.set_id
-			from mtg.card_export c1, mtg.card_export c3
+			select_Query = """select string_agg(c1.printed_name,'\\'),c1.color,c3.image,string_agg(c1.name,'\\'), c1.set_id,cp.usd
+			from mtg.card_export c1, mtg.card_export c3,mtg.card_price cp
 			where c1.id in
 			(select c2.id
 			from mtg.card_export c2
@@ -137,8 +137,9 @@ class MtgFinder:
 			and c1.name = c3.name
 			and c3.lang = 'en'
 			and c1.set_id = c3.set_id
-			group by c1.id,c1.color,c3.image, c1.set_id
-			order by c1.color"""
+			and c1.id=cp.id
+			group by c1.id,c1.color,c3.image, c1.set_id,cp.usd
+			order by c1.color,cp.usd"""
 			cursor.execute(select_Query, dict(like= '%'+message.text.replace(',','')+'%'))
 			self.mtg_records = cursor.fetchall()
 			if cursor.rowcount == 0:
@@ -184,9 +185,9 @@ class MtgFinder:
 		flag = False
 		for i in range (len(self.mtg_records)):
 			if self.mtg_records[0][0] != self.mtg_records[0][3]:
-				rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4]+ '\n'
+				rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + self.mtg_records[0][5]+ '\n'
 			else:
-				rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + '\n'
+				rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + self.mtg_records[0][5] + '\n'
 			self.mtg_records.pop(0)
 			if i == 19:
 				flag = True
@@ -206,9 +207,9 @@ class MtgFinder:
 				rez=''
 				for i in range (len(self.mtg_records)):
 					if self.mtg_records[0][0] != self.mtg_records[0][3]:
-						rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4]+ '\n'
+						rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + self.mtg_records[0][5]+ '\n'
 					else:
-						rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + '\n'
+						rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + self.mtg_records[0][5] + '\n'
 					self.mtg_records.pop(0)
 					if i == 19:
 						break
