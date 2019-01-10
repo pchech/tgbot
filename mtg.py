@@ -127,7 +127,7 @@ class MtgFinder:
 						  port = "5432",
 						  database="de7cvsaumikoei")
 			cursor = conn.cursor()
-			select_Query = """select string_agg(c1.printed_name,'\\'),c1.color,c3.image,string_agg(c1.name,'\\')
+			select_Query = """select string_agg(c1.printed_name,'\\'),c1.color,c3.image,string_agg(c1.name,'\\'), c1.set_id
 			from mtg.card_export c1, mtg.card_export c3
 			where c1.id in
 			(select c2.id
@@ -137,7 +137,7 @@ class MtgFinder:
 			and c1.name = c3.name
 			and c3.lang = 'en'
 			and c1.set_id = c3.set_id
-			group by c1.id,c1.color,c3.image
+			group by c1.id,c1.color,c3.image, c1.set_id
 			order by c1.color"""
 			cursor.execute(select_Query, dict(like= '%'+message.text.replace(',','')+'%'))
 			self.mtg_records = cursor.fetchall()
@@ -184,9 +184,9 @@ class MtgFinder:
 		flag = False
 		for i in range (len(self.mtg_records)):
 			if self.mtg_records[0][0] != self.mtg_records[0][3]:
-				rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + '\n'
+				rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4]+ '\n'
 			else:
-				rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + '\n'
+				rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + '\n'
 			self.mtg_records.pop(0)
 			if i == 19:
 				flag = True
@@ -205,7 +205,10 @@ class MtgFinder:
 			if call.data == "next":
 				rez=''
 				for i in range (len(self.mtg_records)):
-					rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + '\n'
+					if self.mtg_records[0][0] != self.mtg_records[0][3]:
+						rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4]+ '\n'
+					else:
+						rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + '\n'
 					self.mtg_records.pop(0)
 					if i == 19:
 						break
