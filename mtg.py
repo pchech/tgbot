@@ -185,9 +185,9 @@ class MtgFinder:
 		flag = False
 		for i in range (len(self.mtg_records)):
 			if self.mtg_records[0][0] != self.mtg_records[0][3]:
-				rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + self.mtg_records[0][5]+ '\n'
+				rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5])+ '\n'
 			else:
-				rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + self.mtg_records[0][5] + '\n'
+				rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5]) + '\n'
 			self.mtg_records.pop(0)
 			if i == 19:
 				flag = True
@@ -207,9 +207,9 @@ class MtgFinder:
 				rez=''
 				for i in range (len(self.mtg_records)):
 					if self.mtg_records[0][0] != self.mtg_records[0][3]:
-						rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + self.mtg_records[0][5]+ '\n'
+						rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5])+ '\n'
 					else:
-						rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + self.mtg_records[0][5] + '\n'
+						rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5]) + '\n'
 					self.mtg_records.pop(0)
 					if i == 19:
 						break
