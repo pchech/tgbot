@@ -147,7 +147,7 @@ class MtgFinder:
 			elif cursor.rowcount < 3:
 				for row in self.mtg_records:
 					self.bot.send_photo(message.chat.id,bytes(row[2]))
-					self.bot.send_message(message.chat.id, 'TCG Price:' + row[5])
+					self.bot.send_message(message.chat.id, 'TCG Price:' + str(row[5]))
 			else:
 				self.print_card_list(message)
 		finally:
