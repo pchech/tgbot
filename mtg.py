@@ -132,14 +132,14 @@ class MtgFinder:
 			where c1.id in
 			(select c2.id
 			from mtg.card_export c2
-			where lower(c2.printed_name) like lower(%(like)s) escape '='
+			where replace(lower(c2.printed_name),',','') like lower(%(like)s) escape '='
 			)
 			and c1.name = c3.name
 			and c3.lang = 'en'
 			and c1.set_id = c3.set_id
 			group by c1.id,c1.color,c3.image
 			order by c1.color"""
-			cursor.execute(select_Query, dict(like= '%'+message.text+'%'))
+			cursor.execute(select_Query, dict(like= '%'+message.text.replace(',','')+'%'))
 			self.mtg_records = cursor.fetchall()
 			if cursor.rowcount == 0:
 				self.bot.send_message(message.chat.id,'Не найдено')
