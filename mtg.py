@@ -137,9 +137,9 @@ class MtgFinder:
 			and c1.name = c3.name
 			and c3.lang = 'en'
 			and c1.set_id = c3.set_id
-			and c1.id=cp.id
+			and c3.id=cp.id
 			group by c1.id,c1.color,c3.image, c1.set_id,cp.usd
-			order by c1.color,cp.usd"""
+			order by c1.color,cp.usd desc"""
 			cursor.execute(select_Query, dict(like= '%'+message.text.replace(',','')+'%'))
 			self.mtg_records = cursor.fetchall()
 			if cursor.rowcount == 0:
