@@ -133,7 +133,7 @@ from
 				msg=self.bot.send_message(message.chat.id, 'Неправильный фильтр')
 				self.bot.register_next_step_handler(msg, self.advance_search)
 			else:
-			self.temp_flag=1
+				self.temp_flag=1
 				self.add_param(message.text)
 				msg=self.bot.send_message(message.chat.id, 'Введите значение')
 				self.bot.register_next_step_handler(msg, self.cardd_search)
