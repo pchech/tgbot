@@ -185,7 +185,7 @@ from
 			from mtg.card_export c4
 			where c4.name = c1.name)
 			group by c1.id,c1.color,c3.image, s.set_id,cp.usd
-			order by c1.color,c1.usd desc"""
+			order by c1.color,cp.usd desc"""
 			cursor.execute(select_Query, dict(like= '%'+message.text.replace(',','')+'%'))
 			self.mtg_records = cursor.fetchall()
 			if cursor.rowcount == 0:
