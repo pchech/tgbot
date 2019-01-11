@@ -6,30 +6,66 @@ import os
 class MtgFinder:
 	c_types=['c','t','o','m','cmc','mana','is','r','e','in','f',
 	'color','type','oracle','edition','format','cmc']
-	map={'color':'c',
-		'type':'t',
+	map={'color':'c1.color',
+		'type':'c1.printed_type',
 		'oracle':'o',
-		'edition':'e',
+		'edition':'s.set_id',
 		'format':'f',
 		'cmc':'cmc'}
 	change=0
+	select = """select string_agg(nat_name,'||' order by nat_name) card_name,color,set_id,usd
+from
+(select string_agg(c1.printed_name,'\\' order by c1.name) nat_name,c1.color,c3.image,string_agg(c1.name,'\\' order by c1.name) en_name, s.set_id,cp.usd
+			from mtg.card_export c1, mtg.card_export c3,mtg.card_price cp, mtg.set s
+			where 1=1
+			and c1.name = c3.name
+			and c3.lang = 'en'
+			and c1.set_id = c3.set_id
+			and c3.id=cp.id
+			and cast(c1.set_id as integer) = s.id
+			and c1.set_id = (select max(c4.set_id)
+			from mtg.card_export c4
+			where c4.name = c1.name)
+			{}
+			group by c1.id,c1.color,c3.image, s.set_id,cp.usd
+			order by c1.color,cp.usd) v
+	group by en_name, color, set_id,usd
+	order by color, card_name"""
 	params={'q':''}
 	mtg_records=[]
+	temp_flag = 0
 	
 	def __init__(self,bot):
 		self.bot=bot
 	def clear_param(self,chat_id):
-		self.params={'q':''}
+		#self.params={'q':''}
+		self.temp_flag = 0
+		self.select = """select string_agg(c1.printed_name,'\\'),c1.color,c3.image,string_agg(c1.name,'\\'), s.set_id,cp.usd
+			from mtg.card_export c1, mtg.card_export c3,mtg.card_price cp, mtg.set s
+			where 1=1
+			and c1.name = c3.name
+			and c3.lang = 'en'
+			and c1.set_id = c3.set_id
+			and c3.id=cp.id
+			and cast(c1.set_id as integer) = s.id
+			and c1.set_id = (select max(c4.set_id)
+			from mtg.card_export c4
+			where c4.name = c1.name)
+			{}
+			group by c1.id,c1.color,c3.image, s.set_id,cp.usd
+			order by c1.color,cp.usd desc""" 
 		markup = telebot.types.ReplyKeyboardRemove(selective=False)
 		self.bot.send_message(chat_id, 'Complete',reply_markup = markup)
 	
 	def add_param(self,param):
-		self.params['q']=self.params['q']+self.get_map(param)+':'
+		self.select = self.select.format('and lower('+self.get_map(param)+') = {}')
+		#self.params['q']=self.params['q']+self.get_map(param)+':'
 	
 	def add_params_value(self,value):
-		if ' ' in value:
-			value='"'+value+'"'
-		self.params['q']=self.params['q']+value+' '
+		#if ' ' in value:
+		#	value='"'+value+'"'
+		self.select = self.select.format("'"+lower(value)+"' {}")
+		#self.params['q']=self.params['q']+value+' '
 	
 	def get_map(self,type):
 		return self.map[type.lower()]
@@ -46,10 +82,10 @@ class MtgFinder:
 		markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
 		itembtn1 = telebot.types.KeyboardButton('Color')
 		itembtn2 = telebot.types.KeyboardButton('Type')
-		itembtn3 = telebot.types.KeyboardButton('Oracle')
+		#itembtn3 = telebot.types.KeyboardButton('Oracle')
 		itembtn4 = telebot.types.KeyboardButton('Edition')
-		itembtn5 = telebot.types.KeyboardButton('Format')
-		itembtn6 = telebot.types.KeyboardButton('Cmc')
+		#itembtn5 = telebot.types.KeyboardButton('Format')
+		#itembtn6 = telebot.types.KeyboardButton('Cmc')
 		itembtn6 = telebot.types.KeyboardButton('Finish')
 		markup.row(itembtn1, itembtn2,itembtn3)
 		markup.row(itembtn4, itembtn5)
@@ -85,13 +121,19 @@ class MtgFinder:
 
 	def advance_search(self,message):
 		if message.text.lower() == 'finish':
-			self.card_search_advance(message)
-			self.clear_param(message.chat.id)
+			if self.temp_flag!=0:
+				self.select = self.select.format('')
+				self.card_search_advance(message)
+				self.clear_param(message.chat.id)
+			else:
+				msg=self.bot.send_message(message.chat.id, 'Запрос без фильтров временно запрещен')
+				self.bot.register_next_step_handler(msg, self.advance_search)
 		else:
 			if self.validate_type(message.text) is False:
 				msg=self.bot.send_message(message.chat.id, 'Неправильный фильтр')
 				self.bot.register_next_step_handler(msg, self.advance_search)
 			else:
+			self.temp_flag=1
 				self.add_param(message.text)
 				msg=self.bot.send_message(message.chat.id, 'Введите значение')
 				self.bot.register_next_step_handler(msg, self.cardd_search)
@@ -127,8 +169,8 @@ class MtgFinder:
 						  port = "5432",
 						  database="de7cvsaumikoei")
 			cursor = conn.cursor()
-			select_Query = """select string_agg(c1.printed_name,'\\'),c1.color,c3.image,string_agg(c1.name,'\\'), c1.set_id,cp.usd
-			from mtg.card_export c1, mtg.card_export c3,mtg.card_price cp
+			select_Query = """select string_agg(c1.printed_name,'\\'),c1.color,c3.image,string_agg(c1.name,'\\'), s.set_id,cp.usd
+			from mtg.card_export c1, mtg.card_export c3,mtg.card_price cp, mtg.set s
 			where c1.id in
 			(select c2.id
 			from mtg.card_export c2
@@ -138,8 +180,12 @@ class MtgFinder:
 			and c3.lang = 'en'
 			and c1.set_id = c3.set_id
 			and c3.id=cp.id
-			group by c1.id,c1.color,c3.image, c1.set_id,cp.usd
-			order by c1.color,cp.usd desc"""
+			and cast(c1.set_id as integer) = s.id
+			and c1.set_id = (select max(c4.set_id)
+			from mtg.card_export c4
+			where c4.name = c1.name)
+			group by c1.id,c1.color,c3.image, s.set_id,cp.usd
+			order by c1.color,c1.printed_name"""
 			cursor.execute(select_Query, dict(like= '%'+message.text.replace(',','')+'%'))
 			self.mtg_records = cursor.fetchall()
 			if cursor.rowcount == 0:
