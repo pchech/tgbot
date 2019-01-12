@@ -64,7 +64,7 @@ from
 	def add_params_value(self,value):
 		#if ' ' in value:
 		#	value='"'+value+'"'
-		self.select = self.select.format("'"+lower(value)+"' {}")
+		self.select = self.select.format("'"+value.lower()+"' {}")
 		#self.params['q']=self.params['q']+value+' '
 	
 	def get_map(self,type):
