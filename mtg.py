@@ -54,8 +54,7 @@ from
 			{}
 			group by c1.id,c1.color,c3.image, s.set_id,cp.usd
 			order by c1.color,cp.usd desc""" 
-		markup = telebot.types.ReplyKeyboardRemove(selective=False)
-		self.bot.send_message(chat_id, 'Complete',reply_markup = markup)
+		self.bot.send_message(chat_id, 'Complete',reply_markup = prepare_cancel_keyboard())
 	
 	def add_param(self,param):
 		self.select = self.select.format('and lower('+self.get_map(param)+') = {}')
@@ -69,16 +68,8 @@ from
 	
 	def get_map(self,type):
 		return self.map[type.lower()]
-
-
-#Смена режима работы бота
-	def change_to_mtg(self,message):
-		if self.change != 1:
-			self.change = 1
-			self.bot.send_message(message.chat.id, 'Включен MTG режим')
-
-	def change_to_advance(self,message):
-		msg=self.bot.send_message(message.chat.id, 'Включен MTG Advance режим')
+	
+	def prepare_keyboard():
 		markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
 		itembtn1 = telebot.types.KeyboardButton('Color')
 		itembtn2 = telebot.types.KeyboardButton('Type')
@@ -90,7 +81,21 @@ from
 		markup.row(itembtn1, itembtn2,itembtn3)
 		markup.row(itembtn4, itembtn5)
 		markup.row(itembtn6)
-		msg=self.bot.send_message(message.chat.id, 'Выберите фильтр',reply_markup = markup)
+		return markup
+	
+	def prepare_cancel_keyboard():
+		markup = telebot.types.ReplyKeyboardRemove(selective=False)
+		return markup
+
+#Смена режима работы бота
+	def change_to_mtg(self,message):
+		if self.change != 1:
+			self.change = 1
+			self.bot.send_message(message.chat.id, 'Включен MTG режим')
+
+	def change_to_advance(self,message):
+		msg=self.bot.send_message(message.chat.id, 'Включен MTG Advance режим')
+		msg=self.bot.send_message(message.chat.id, 'Выберите фильтр',reply_markup = prepare_keyboard())
 		self.bot.register_next_step_handler(msg, self.advance_search)
 		
 	def change_to_normal(self,message):
@@ -127,39 +132,57 @@ from
 				self.clear_param(message.chat.id)
 			else:
 				msg=self.bot.send_message(message.chat.id, 'Запрос без фильтров временно запрещен')
-				self.bot.register_next_step_handler(msg, self.advance_search)
+				self.bot.register_next_step_handler(msg, self.advance_search,markup = prepare_keyboard())
 		else:
 			if self.validate_type(message.text) is False:
 				msg=self.bot.send_message(message.chat.id, 'Неправильный фильтр')
-				self.bot.register_next_step_handler(msg, self.advance_search)
+				self.bot.register_next_step_handler(msg, self.advance_search, markup = prepare_keyboard())
 			else:
 				self.temp_flag=1
 				self.add_param(message.text)
 				msg=self.bot.send_message(message.chat.id, 'Введите значение')
-				self.bot.register_next_step_handler(msg, self.cardd_search)
+				self.bot.register_next_step_handler(msg, self.cardd_search, markup = prepare_cancel_keyboard())
 
 	def cardd_search(self,message):
 		self.add_params_value(message.text)
 		msg=self.bot.send_message(message.chat.id, 'Продолжим?')
-		self.bot.register_next_step_handler(msg, self.advance_search)
+		self.bot.register_next_step_handler(msg, self.advance_search, markup = prepare_keyboard())
 
 	def card_search_advance(self,message):
-		self.params['include_multilingual']=True
-		url='https://api.scryfall.com/cards/search'
-		rsp=requests.get(url=url,params=self.params)
-		#self.bot.send_message(message.chat.id,rsp.url)
-		rsp=json.loads(rsp.text)
-		rez=''
 		try:
-			card_list=rsp['data']
-			for card in card_list:
-				try:
-					rez+=card['name']+'\t'+card['usd']+'\n'
-				except KeyError:
-					pass
-			self.bot.send_message(message.chat.id,rez)
-		except KeyError:
-			self.bot.send_message(message.chat.id,'Неправильный запрос')
+			conn=psycopg2.connect(user = "ptefqjhdtyrgya",
+						  password = "d06f1f573d5919c73c80143e18ea9883e1760412d455a00b901b67f5ac40fcd8",
+						  host = "ec2-54-247-161-208.eu-west-1.compute.amazonaws.com",
+						  port = "5432",
+						  database="de7cvsaumikoei")
+			cursor = conn.cursor()
+			cursor.execute(self.select)
+			self.mtg_records = cursor.fetchall()
+			if cursor.rowcount == 0:
+				self.bot.send_message(message.chat.id,'Не найдено')
+			else:
+				self.print_card_list(message,True)
+		finally:
+			if (conn):
+				cursor.close()
+				conn.close()
+				
+	#	self.params['include_multilingual']=True
+	#	url='https://api.scryfall.com/cards/search'
+	#	rsp=requests.get(url=url,params=self.params)
+		#self.bot.send_message(message.chat.id,rsp.url)
+	#	rsp=json.loads(rsp.text)
+	#	rez=''
+	#	try:
+	#		card_list=rsp['data']
+	#		for card in card_list:
+	#			try:
+	#				rez+=card['name']+'\t'+card['usd']+'\n'
+	#			except KeyError:
+	#				pass
+	#		self.bot.send_message(message.chat.id,rez)
+	#	except KeyError:
+	#		self.bot.send_message(message.chat.id,'Неправильный запрос')
 	
 	def card_search(self,message):
 		try:
@@ -169,7 +192,7 @@ from
 						  port = "5432",
 						  database="de7cvsaumikoei")
 			cursor = conn.cursor()
-			select_Query = """select string_agg(c1.printed_name,'\\'),c1.color,c3.image,string_agg(c1.name,'\\'), s.set_id,cp.usd
+			select_Query = """select distinct string_agg(c1.printed_name,'\\'),c1.color,c3.image,string_agg(c1.name,'\\'), s.set_id,cp.usd
 			from mtg.card_export c1, mtg.card_export c3,mtg.card_price cp, mtg.set s
 			where c1.id in
 			(select c2.id
@@ -224,7 +247,7 @@ from
 #            else:
 #                rez='\n'.join(data)
 #            bot.send_message(message.chat.id,rez)
-	def print_card_list(self,message):
+	def print_card_list(self,message,flag = False):
 		keyboard = telebot.types.InlineKeyboardMarkup()
 		callback_button = telebot.types.InlineKeyboardButton(text="Показать следующую страницу", callback_data="next")
 		keyboard.add(callback_button)
@@ -236,7 +259,7 @@ from
 			else:
 				rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5]) + '\n'
 			self.mtg_records.pop(0)
-			if i == 19:
+			if i == 10:
 				flag = True
 				break
 		if flag is False:
@@ -253,12 +276,15 @@ from
 			if call.data == "next":
 				rez=''
 				for i in range (len(self.mtg_records)):
-					if self.mtg_records[0][0] != self.mtg_records[0][3]:
-						rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5])+ '\n'
+					if flag is False:
+						if self.mtg_records[0][0] != self.mtg_records[0][3]:
+							rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5])+ '\n'
+						else:
+							rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5]) + '\n'
 					else:
-						rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5]) + '\n'
+						rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][2] + ' | ' + str(self.mtg_records[0][3]) + '\n'
 					self.mtg_records.pop(0)
-					if i == 19:
+					if i == 10:
 						break
 				if len(self.mtg_records) == 0:
 					self.bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=rez)
