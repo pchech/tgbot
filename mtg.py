@@ -268,7 +268,7 @@ from
 			if i == 10:
 				flag = True
 				break
-		if flag is False:
+		if len(self.mtg_records) == 0:
 			self.bot.send_message(message.chat.id, rez)
 		else:
 			self.bot.send_message(message.chat.id, rez, reply_markup = keyboard)
