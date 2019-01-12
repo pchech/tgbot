@@ -57,13 +57,13 @@ from
 		self.bot.send_message(chat_id, 'Complete',reply_markup = self.prepare_cancel_keyboard())
 	
 	def add_param(self,param):
-		self.select = self.select.format('and lower('+self.get_map(param)+') = {}')
+		self.select = self.select.format('and lower('+self.get_map(param)+') like {}')
 		#self.params['q']=self.params['q']+self.get_map(param)+':'
 	
 	def add_params_value(self,value):
 		#if ' ' in value:
 		#	value='"'+value+'"'
-		self.select = self.select.format("'"+value.lower()+"' {}")
+		self.select = self.select.format("'%"+value.lower()+"%' {}")
 		#self.params['q']=self.params['q']+value+' '
 	
 	def get_map(self,type):
