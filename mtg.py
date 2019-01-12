@@ -34,12 +34,13 @@ from
 	params={'q':''}
 	mtg_records=[]
 	temp_flag = 0
-	
+	type_flag = False
 	def __init__(self,bot):
 		self.bot=bot
 	def clear_param(self,chat_id):
 		#self.params={'q':''}
 		self.temp_flag = 0
+		self.type_flag = False
 		self.select = """select string_agg(c1.printed_name,'\\'),c1.color,c3.image,string_agg(c1.name,'\\'), s.set_id,cp.usd
 			from mtg.card_export c1, mtg.card_export c3,mtg.card_price cp, mtg.set s
 			where 1=1
@@ -54,7 +55,7 @@ from
 			{}
 			group by c1.id,c1.color,c3.image, s.set_id,cp.usd
 			order by c1.color,cp.usd desc""" 
-		self.bot.send_message(chat_id, 'Complete',reply_markup = prepare_cancel_keyboard())
+		self.bot.send_message(chat_id, 'Complete',reply_markup = self.prepare_cancel_keyboard())
 	
 	def add_param(self,param):
 		self.select = self.select.format('and lower('+self.get_map(param)+') = {}')
@@ -95,7 +96,7 @@ from
 
 	def change_to_advance(self,message):
 		msg=self.bot.send_message(message.chat.id, 'Включен MTG Advance режим')
-		msg=self.bot.send_message(message.chat.id, 'Выберите фильтр',reply_markup = prepare_keyboard())
+		msg=self.bot.send_message(message.chat.id, 'Выберите фильтр',reply_markup = self.prepare_keyboard())
 		self.bot.register_next_step_handler(msg, self.advance_search)
 		
 	def change_to_normal(self,message):
@@ -132,23 +133,24 @@ from
 				self.clear_param(message.chat.id)
 			else:
 				msg=self.bot.send_message(message.chat.id, 'Запрос без фильтров временно запрещен')
-				self.bot.register_next_step_handler(msg, self.advance_search,markup = prepare_keyboard())
+				self.bot.register_next_step_handler(msg, self.advance_search,reply_markup = self.prepare_keyboard())
 		else:
 			if self.validate_type(message.text) is False:
 				msg=self.bot.send_message(message.chat.id, 'Неправильный фильтр')
-				self.bot.register_next_step_handler(msg, self.advance_search, markup = prepare_keyboard())
+				self.bot.register_next_step_handler(msg, self.advance_search, reply_markup = self.prepare_keyboard())
 			else:
 				self.temp_flag=1
 				self.add_param(message.text)
 				msg=self.bot.send_message(message.chat.id, 'Введите значение')
-				self.bot.register_next_step_handler(msg, self.cardd_search, markup = prepare_cancel_keyboard())
+				self.bot.register_next_step_handler(msg, self.cardd_search, reply_markup = self.prepare_cancel_keyboard())
 
 	def cardd_search(self,message):
 		self.add_params_value(message.text)
 		msg=self.bot.send_message(message.chat.id, 'Продолжим?')
-		self.bot.register_next_step_handler(msg, self.advance_search, markup = prepare_keyboard())
+		self.bot.register_next_step_handler(msg, self.advance_search, reply_markup = self.prepare_keyboard())
 
 	def card_search_advance(self,message):
+		self.type_flag = True
 		try:
 			conn=psycopg2.connect(user = "ptefqjhdtyrgya",
 						  password = "d06f1f573d5919c73c80143e18ea9883e1760412d455a00b901b67f5ac40fcd8",
@@ -247,7 +249,7 @@ from
 #            else:
 #                rez='\n'.join(data)
 #            bot.send_message(message.chat.id,rez)
-	def print_card_list(self,message,flag = False):
+	def print_card_list(self,message):
 		keyboard = telebot.types.InlineKeyboardMarkup()
 		callback_button = telebot.types.InlineKeyboardButton(text="Показать следующую страницу", callback_data="next")
 		keyboard.add(callback_button)
@@ -255,9 +257,13 @@ from
 		flag = False
 		for i in range (len(self.mtg_records)):
 			if self.mtg_records[0][0] != self.mtg_records[0][3]:
-				rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5])+ '\n'
-			else:
-				rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5]) + '\n'
+				if self.type_flag is False:
+					if self.mtg_records[0][0] != self.mtg_records[0][3]:
+						rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5])+ '\n'
+					else:
+						rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5]) + '\n'
+				else:
+					rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][2] + ' | ' + str(self.mtg_records[0][3]) + '\n'
 			self.mtg_records.pop(0)
 			if i == 10:
 				flag = True
@@ -276,7 +282,7 @@ from
 			if call.data == "next":
 				rez=''
 				for i in range (len(self.mtg_records)):
-					if flag is False:
+					if self.type_flag is False:
 						if self.mtg_records[0][0] != self.mtg_records[0][3]:
 							rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5])+ '\n'
 						else:
