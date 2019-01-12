@@ -132,22 +132,22 @@ from
 				self.card_search_advance(message)
 				self.clear_param(message.chat.id)
 			else:
-				msg=self.bot.send_message(message.chat.id, 'Запрос без фильтров временно запрещен')
-				self.bot.register_next_step_handler(msg, self.advance_search,reply_markup = self.prepare_keyboard())
+				msg=self.bot.send_message(message.chat.id, 'Запрос без фильтров временно запрещен',reply_markup = self.prepare_keyboard())
+				self.bot.register_next_step_handler(msg, self.advance_search)
 		else:
 			if self.validate_type(message.text) is False:
-				msg=self.bot.send_message(message.chat.id, 'Неправильный фильтр')
-				self.bot.register_next_step_handler(msg, self.advance_search, reply_markup = self.prepare_keyboard())
+				msg=self.bot.send_message(message.chat.id, 'Неправильный фильтр', reply_markup = self.prepare_keyboard())
+				self.bot.register_next_step_handler(msg, self.advance_search)
 			else:
 				self.temp_flag=1
 				self.add_param(message.text)
-				msg=self.bot.send_message(message.chat.id, 'Введите значение')
-				self.bot.register_next_step_handler(msg, self.cardd_search, reply_markup = self.prepare_cancel_keyboard())
+				msg=self.bot.send_message(message.chat.id, 'Введите значение', reply_markup = self.prepare_cancel_keyboard())
+				self.bot.register_next_step_handler(msg, self.cardd_search)
 
 	def cardd_search(self,message):
 		self.add_params_value(message.text)
-		msg=self.bot.send_message(message.chat.id, 'Продолжим?')
-		self.bot.register_next_step_handler(msg, self.advance_search, reply_markup = self.prepare_keyboard())
+		msg=self.bot.send_message(message.chat.id, 'Продолжим?', reply_markup = self.prepare_keyboard())
+		self.bot.register_next_step_handler(msg, self.advance_search)
 
 	def card_search_advance(self,message):
 		self.type_flag = True
