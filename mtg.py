@@ -40,7 +40,6 @@ from
 	def clear_param(self,chat_id):
 		#self.params={'q':''}
 		self.temp_flag = 0
-		self.type_flag = False
 		self.select = """select string_agg(c1.printed_name,'\\'),c1.color,c3.image,string_agg(c1.name,'\\'), s.set_id,cp.usd
 			from mtg.card_export c1, mtg.card_export c3,mtg.card_price cp, mtg.set s
 			where 1=1
@@ -269,6 +268,7 @@ from
 				flag = True
 				break
 		if len(self.mtg_records) == 0:
+			self.type_flag = False
 			self.bot.send_message(message.chat.id, rez)
 		else:
 			self.bot.send_message(message.chat.id, rez, reply_markup = keyboard)
@@ -294,5 +294,6 @@ from
 						break
 				if len(self.mtg_records) == 0:
 					self.bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=rez)
+					self.type_flag = False
 				else:
 					self.bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=rez, reply_markup = keyboard)
