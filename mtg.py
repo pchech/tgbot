@@ -40,7 +40,9 @@ from
 	def clear_param(self,chat_id):
 		#self.params={'q':''}
 		self.temp_flag = 0
-		self.select = """select string_agg(c1.printed_name,'\\'),c1.color,c3.image,string_agg(c1.name,'\\'), s.set_id,cp.usd
+		self.select = """select string_agg(nat_name,'||' order by nat_name) card_name,color,set_id,usd
+from
+(select string_agg(c1.printed_name,'\\' order by c1.name) nat_name,c1.color,c3.image,string_agg(c1.name,'\\' order by c1.name) en_name, s.set_id,cp.usd
 			from mtg.card_export c1, mtg.card_export c3,mtg.card_price cp, mtg.set s
 			where 1=1
 			and c1.name = c3.name
@@ -53,7 +55,9 @@ from
 			where c4.name = c1.name)
 			{}
 			group by c1.id,c1.color,c3.image, s.set_id,cp.usd
-			order by c1.color,cp.usd desc""" 
+			order by c1.color,cp.usd) v
+	group by en_name, color, set_id,usd
+	order by color, card_name""" 
 		self.bot.send_message(chat_id, 'Complete',reply_markup = self.prepare_cancel_keyboard())
 	
 	def add_param(self,param):
