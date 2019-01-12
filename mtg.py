@@ -70,7 +70,7 @@ from
 	def get_map(self,type):
 		return self.map[type.lower()]
 	
-	def prepare_keyboard():
+	def prepare_keyboard(self):
 		markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
 		itembtn1 = telebot.types.KeyboardButton('Color')
 		itembtn2 = telebot.types.KeyboardButton('Type')
@@ -84,7 +84,7 @@ from
 		markup.row(itembtn6)
 		return markup
 	
-	def prepare_cancel_keyboard():
+	def prepare_cancel_keyboard(self):
 		markup = telebot.types.ReplyKeyboardRemove(selective=False)
 		return markup
 
