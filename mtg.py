@@ -163,7 +163,7 @@ from
 			if cursor.rowcount == 0:
 				self.bot.send_message(message.chat.id,'Не найдено')
 			else:
-				self.print_card_list(message,True)
+				self.print_card_list(message)
 		finally:
 			if (conn):
 				cursor.close()
