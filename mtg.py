@@ -92,6 +92,7 @@ from
 		if self.change != 1:
 			self.change = 1
 			self.bot.send_message(message.chat.id, 'Включен MTG режим')
+			self.type_flag = False
 
 	def change_to_advance(self,message):
 		msg=self.bot.send_message(message.chat.id, 'Включен MTG Advance режим')
@@ -262,7 +263,7 @@ from
 					else:
 						rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + '\n' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5])+ '\n----------\n'
 				else:
-					rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + '\n' + self.mtg_records[0][2] + ' | ' + str(self.mtg_records[0][3])+ '\n----------\n'
+					rez += self.mtg_records[0][0] + '\n' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][2] + ' | ' + str(self.mtg_records[0][3])+ '\n----------\n'
 			self.mtg_records.pop(0)
 			if i == 10:
 				flag = True
