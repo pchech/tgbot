@@ -79,8 +79,8 @@ from
 		#itembtn5 = telebot.types.KeyboardButton('Format')
 		#itembtn6 = telebot.types.KeyboardButton('Cmc')
 		itembtn6 = telebot.types.KeyboardButton('Finish')
-		markup.row(itembtn1, itembtn2,itembtn3)
-		markup.row(itembtn4, itembtn5)
+		markup.row(itembtn1, itembtn2)
+		markup.row(itembtn4)
 		markup.row(itembtn6)
 		return markup
 	
@@ -259,11 +259,11 @@ from
 			if self.mtg_records[0][0] != self.mtg_records[0][3]:
 				if self.type_flag is False:
 					if self.mtg_records[0][0] != self.mtg_records[0][3]:
-						rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5])+ '\n'
+						rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + '\n' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5])+ '\n----------\n' 
 					else:
-						rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5]) + '\n'
+						rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + '\n' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5])+ '\n----------\n'
 				else:
-					rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][2] + ' | ' + str(self.mtg_records[0][3]) + '\n'
+					rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + '\n' + self.mtg_records[0][2] + ' | ' + str(self.mtg_records[0][3])+ '\n----------\n'
 			self.mtg_records.pop(0)
 			if i == 10:
 				flag = True
@@ -284,11 +284,11 @@ from
 				for i in range (len(self.mtg_records)):
 					if self.type_flag is False:
 						if self.mtg_records[0][0] != self.mtg_records[0][3]:
-							rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5])+ '\n'
+							rez += self.mtg_records[0][0] + '[' + self.mtg_records[0][3] + ']' + '\n' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5])+ '\n----------\n' 
 						else:
-							rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5]) + '\n'
+							rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + '\n' + self.mtg_records[0][4] + ' | ' + str(self.mtg_records[0][5])+ '\n----------\n'
 					else:
-						rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + ' | ' + self.mtg_records[0][2] + ' | ' + str(self.mtg_records[0][3]) + '\n'
+						rez += self.mtg_records[0][0] + ' | ' + self.mtg_records[0][1] + '\n' + self.mtg_records[0][2] + ' | ' + str(self.mtg_records[0][3])+ '\n----------\n'
 					self.mtg_records.pop(0)
 					if i == 10:
 						break
