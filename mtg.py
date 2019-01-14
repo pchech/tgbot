@@ -151,7 +151,7 @@ from
 						  database="de7cvsaumikoei")
 			cursor = conn.cursor()
 			cursor.execute(self.session[message.chat.id])
-			self.mtg_records[chat_id] = cursor.fetchall()
+			self.mtg_records[message.chat.id] = cursor.fetchall()
 			if cursor.rowcount == 0:
 				self.bot.send_message(message.chat.id,'Не найдено')
 			else:
@@ -179,6 +179,7 @@ from
 	#		self.bot.send_message(message.chat.id,'Неправильный запрос')
 	
 	def card_search(self,message):
+		self.type_flag[message.chat.id] = False
 		try:
 			conn=psycopg2.connect(user = "ptefqjhdtyrgya",
 						  password = "d06f1f573d5919c73c80143e18ea9883e1760412d455a00b901b67f5ac40fcd8",
