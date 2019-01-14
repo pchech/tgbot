@@ -30,9 +30,9 @@ mtgfinder = MtgFinder(bot)
 filt=Filter(bot)
 coloriz=Colorizer(bot,os.environ.get('ALGO_KEY'),'MyCollection')
 cluster=Cluster(bot)
-@bot.message_handler(commands=['normalmode'])
-def change_mod_process(message):
-    mtgfinder.change_to_normal(message)
+#@bot.message_handler(commands=['normalmode'])
+#def change_mod_process(message):
+#    mtgfinder.change_to_normal(message)
 	
 @bot.message_handler(commands=['mtgmode'])
 def change_mod_process(message):
