@@ -258,7 +258,7 @@ from
 		keyboard = telebot.types.InlineKeyboardMarkup()
 		callback_button = telebot.types.InlineKeyboardButton(text="Показать следующую страницу", callback_data="next")
 		keyboard.add(callback_button)
-		rez=''
+		rez=' '
 		flag = False
 		for i in range (len(self.mtg_records)):
 			if self.mtg_records[0][0] != self.mtg_records[0][3]:
