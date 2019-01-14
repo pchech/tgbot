@@ -47,7 +47,7 @@ from
 		self.bot.send_message(chat_id, 'Complete',reply_markup = self.prepare_cancel_keyboard())
 	
 	def add_param(self,chat_id,param):
-		self.session[chat_id] = self.select.format('and lower('+self.get_map(param)+') like {}')
+		self.session[chat_id] = self.session[chat_id].format('and lower('+self.get_map(param)+') like {}')
 		#self.select = self.select.format('and lower('+self.get_map(param)+') like {}')
 		#self.params['q']=self.params['q']+self.get_map(param)+':'
 	
@@ -272,20 +272,20 @@ from
 		keyboard.add(callback_button)
 		if call.message:
 			if call.data == "next":
-				self.rez[message.chat.id]=''
-				for i in range (len(self.mtg_records[message.chat.id])):
-					if self.type_flag[message.chat.id] is False:
-						if self.mtg_records[message.chat.id][0][0] != self.mtg_records[message.chat.id][0][3]:
-							self.rez[message.chat.id] += self.mtg_records[message.chat.id][0][0] + '[' + self.mtg_records[message.chat.id][0][3] + ']' + '\n' + self.mtg_records[message.chat.id][0][1] + ' | ' + self.mtg_records[message.chat.id][0][4] + ' | ' + str(self.mtg_records[message.chat.id][0][5])+ '\n----------\n' 
+				self.rez[call.message.chat.id]=''
+				for i in range (len(self.mtg_records[call.message.chat.id])):
+					if self.type_flag[call.message.chat.id] is False:
+						if self.mtg_records[message.chat.id][0][0] != self.mtg_records[call.message.chat.id][0][3]:
+							self.rez[call.message.chat.id] += self.mtg_records[call.message.chat.id][0][0] + '[' + self.mtg_records[call.message.chat.id][0][3] + ']' + '\n' + self.mtg_records[call.message.chat.id][0][1] + ' | ' + self.mtg_records[call.message.chat.id][0][4] + ' | ' + str(self.mtg_records[ca;;.message.chat.id][0][5])+ '\n----------\n' 
 						else:
-							self.rez[message.chat.id] += self.mtg_records[message.chat.id][0][0] + ' | ' + self.mtg_records[message.chat.id][0][1] + '\n' + self.mtg_records[message.chat.id][0][4] + ' | ' + str(self.mtg_records[message.chat.id][0][5])+ '\n----------\n'
+							self.rez[call.message.chat.id] += self.mtg_records[call.message.chat.id][0][0] + ' | ' + self.mtg_records[call.message.chat.id][0][1] + '\n' + self.mtg_records[call.message.chat.id][0][4] + ' | ' + str(self.mtg_records[call.message.chat.id][0][5])+ '\n----------\n'
 					else:
-						self.rez[message.chat.id] += self.mtg_records[message.chat.id][0][0] + '\n' + self.mtg_records[message.chat.id][0][1] + ' | ' + self.mtg_records[message.chat.id][0][2] + ' | ' + str(self.mtg_records[message.chat.id][0][3])+ '\n----------\n'
-					self.mtg_records[message.chat.id].pop(0)
+						self.rez[call.message.chat.id] += self.mtg_records[call.message.chat.id][0][0] + '\n' + self.mtg_records[call.message.chat.id][0][1] + ' | ' + self.mtg_records[call.message.chat.id][0][2] + ' | ' + str(self.mtg_records[call.message.chat.id][0][3])+ '\n----------\n'
+					self.mtg_records[call.message.chat.id].pop(0)
 					if i == 10:
 						break
-				if len(self.mtg_records[message.chat.id]) == 0:
-					self.type_flag[message.chat.id] = False
-					self.bot.send_message(message.chat.id, self.rez[message.chat.id])
+				if len(self.mtg_records[call.message.chat.id]) == 0:
+					self.type_flag[call.message.chat.id] = False
+					self.bot.send_message(call.message.chat.id, self.rez[call.message.chat.id])
 				else:
-					self.bot.send_message(message.chat.id, self.rez[message.chat.id], reply_markup = keyboard)
+					self.bot.send_message(call.message.chat.id, self.rez[call.message.chat.id], reply_markup = keyboard)
