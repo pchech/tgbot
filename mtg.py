@@ -7,13 +7,14 @@ class MtgFinder:
 	session = {}
 	rez = {}
 	c_types=['c','t','o','m','cmc','mana','is','r','e','in','f',
-	'color','type','oracle','edition','format','cmc']
+	'color','type','oracle','edition','format','cmc','rarity']
 	map={'color':'c1.color',
 		'type':'c1.printed_type',
 		'oracle':'o',
 		'edition':'s.set_id',
 		'format':'f',
-		'cmc':'cmc'}
+		'cmc':'cmc',
+		'rarity':'c1.rarity'}
 	change=1
 	select = """select string_agg(nat_name,'||' order by nat_name) card_name,color,set_id,usd
 from
@@ -66,11 +67,11 @@ from
 		itembtn2 = telebot.types.KeyboardButton('Type')
 		#itembtn3 = telebot.types.KeyboardButton('Oracle')
 		itembtn4 = telebot.types.KeyboardButton('Edition')
-		#itembtn5 = telebot.types.KeyboardButton('Format')
+		itembtn5 = telebot.types.KeyboardButton('Rarity')
 		#itembtn6 = telebot.types.KeyboardButton('Cmc')
 		itembtn6 = telebot.types.KeyboardButton('Finish')
 		markup.row(itembtn1, itembtn2)
-		markup.row(itembtn4)
+		markup.row(itembtn4,itembtn5)
 		markup.row(itembtn6)
 		return markup
 	
@@ -209,7 +210,7 @@ from
 			if cursor.rowcount == 0:
 				self.bot.send_message(message.chat.id,'Не найдено')
 			elif cursor.rowcount < 3:
-				for row in self.mtg_records:
+				for row in self.mtg_records[message.chat.id]:
 					self.bot.send_photo(message.chat.id,bytes(row[2]))
 					self.bot.send_message(message.chat.id, 'TCG Price:' + str(row[5]))
 			else:
