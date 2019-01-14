@@ -35,13 +35,13 @@ from
 	order by color, card_name"""
 	params={'q':''}
 	mtg_records = {}
-	temp_flag = 0
+	temp_flag = {}
 	type_flag = {}
 	def __init__(self,bot):
 		self.bot=bot
 	def clear_param(self,chat_id):
 		#self.params={'q':''}
-		self.temp_flag = 0
+		self.temp_flag[chat_id] = 0
 		self.session[chat_id] = self.select
 		self.bot.send_message(chat_id, 'Complete',reply_markup = self.prepare_cancel_keyboard())
 	
@@ -119,8 +119,8 @@ from
 
 	def advance_search(self,message):
 		if message.text.lower() == 'finish':
-			if self.temp_flag!=0:
-				self.select = self.select.format('')
+			if self.temp_flag[message.chat.id]!=0:
+				self.session[message.chat.id] = self.session[message.chat.id].format('')
 				self.card_search_advance(message)
 				self.clear_param(message.chat.id)
 			else:
@@ -131,7 +131,7 @@ from
 				msg=self.bot.send_message(message.chat.id, 'Неправильный фильтр', reply_markup = self.prepare_keyboard())
 				self.bot.register_next_step_handler(msg, self.advance_search)
 			else:
-				self.temp_flag=1
+				self.temp_flag[message.chat.id]=1
 				self.add_param(message.chat.id,message.text)
 				msg=self.bot.send_message(message.chat.id, 'Введите значение', reply_markup = self.prepare_cancel_keyboard())
 				self.bot.register_next_step_handler(msg, self.cardd_search)
@@ -204,7 +204,7 @@ from
 			group by c1.id,c1.color,c3.image, s.set_id,cp.usd
 			order by c1.color,cp.usd desc"""
 			cursor.execute(select_Query, dict(like= '%'+message.text.replace(',','')+'%'))
-			self.mtg_records = cursor.fetchall()
+			self.mtg_records[message.chat.id] = cursor.fetchall()
 			if cursor.rowcount == 0:
 				self.bot.send_message(message.chat.id,'Не найдено')
 			elif cursor.rowcount < 3:
