@@ -4,6 +4,7 @@ import psycopg2
 import telebot
 import os
 class MtgFinder:
+	session={}
 	c_types=['c','t','o','m','cmc','mana','is','r','e','in','f',
 	'color','type','oracle','edition','format','cmc']
 	map={'color':'c1.color',
