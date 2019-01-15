@@ -88,6 +88,7 @@ from
 			self.type_flag[message.chat.id] = False
 
 	def change_to_advance(self,message):
+		self.session[chat_id] = self.select
 		self.temp_flag[message.chat.id] = 0
 		msg=self.bot.send_message(message.chat.id, 'Включен MTG Advance режим')
 		msg=self.bot.send_message(message.chat.id, 'Выберите фильтр',reply_markup = self.prepare_keyboard())
