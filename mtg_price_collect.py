@@ -7,7 +7,7 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 
 sched = BlockingScheduler()
 
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=12, minutes = 15)
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=12, minute = 30)
 def scheduled_job():
     DATABASE_URL = os.environ['DATABASE_URL']
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
