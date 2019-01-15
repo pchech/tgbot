@@ -40,6 +40,7 @@ from
 	type_flag = {}
 	def __init__(self,bot):
 		self.bot=bot
+		
 	def clear_param(self,chat_id):
 		#self.params={'q':''}
 		self.temp_flag[chat_id] = 0
@@ -87,6 +88,7 @@ from
 			self.type_flag[message.chat.id] = False
 
 	def change_to_advance(self,message):
+		self.temp_flag[message.chat.id] = 0
 		msg=self.bot.send_message(message.chat.id, 'Включен MTG Advance режим')
 		msg=self.bot.send_message(message.chat.id, 'Выберите фильтр',reply_markup = self.prepare_keyboard())
 		self.bot.register_next_step_handler(msg, self.advance_search)
