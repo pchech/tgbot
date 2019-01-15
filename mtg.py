@@ -76,6 +76,28 @@ from
 		markup.row(itembtn6)
 		return markup
 	
+	def prepare_color_keyboard(self):
+		markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
+		itembtn1 = telebot.types.KeyboardButton('R')
+		itembtn2 = telebot.types.KeyboardButton('G')
+		itembtn3 = telebot.types.KeyboardButton('U')
+		itembtn4 = telebot.types.KeyboardButton('B')
+		itembtn5 = telebot.types.KeyboardButton('W')
+		itembtn6 = telebot.types.KeyboardButton('N')
+		markup.row(itembtn1, itembtn2, itembtn3)
+		markup.row(itembtn4, itembtn5, itembtn6)
+		return markup
+		
+	def prepare_rarity_keyboard(self):
+		markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
+		itembtn1 = telebot.types.KeyboardButton('Common')
+		itembtn2 = telebot.types.KeyboardButton('Uncommon')
+		itembtn3 = telebot.types.KeyboardButton('Rare')
+		itembtn4 = telebot.types.KeyboardButton('Mythic')
+		markup.row(itembtn1, itembtn2)
+		markup.row(itembtn3, itembtn4)
+		return markup
+	
 	def prepare_cancel_keyboard(self):
 		markup = telebot.types.ReplyKeyboardRemove(selective=False)
 		return markup
@@ -137,7 +159,12 @@ from
 			else:
 				self.temp_flag[message.chat.id]=1
 				self.add_param(message.chat.id,message.text)
-				msg=self.bot.send_message(message.chat.id, 'Введите значение', reply_markup = self.prepare_cancel_keyboard())
+				if message.text.lower() == 'color':
+					msg=self.bot.send_message(message.chat.id, 'Введите значение', reply_markup = self.prepare_color_keyboard())
+				elif message.text.lower() == 'rarity':
+					msg=self.bot.send_message(message.chat.id, 'Введите значение', reply_markup = self.prepare_rarity_keyboard())
+				else:
+					msg=self.bot.send_message(message.chat.id, 'Введите значение', reply_markup = self.prepare_cancel_keyboard())
 				self.bot.register_next_step_handler(msg, self.cardd_search)
 
 	def cardd_search(self,message):
@@ -278,7 +305,7 @@ from
 				self.rez[call.message.chat.id]=''
 				for i in range (len(self.mtg_records[call.message.chat.id])):
 					if self.type_flag[call.message.chat.id] is False:
-						if self.mtg_records[message.chat.id][0][0] != self.mtg_records[call.message.chat.id][0][3]:
+						if self.mtg_records[call.message.chat.id][0][0] != self.mtg_records[call.message.chat.id][0][3]:
 							self.rez[call.message.chat.id] += self.mtg_records[call.message.chat.id][0][0] + '[' + self.mtg_records[call.message.chat.id][0][3] + ']' + '\n' + self.mtg_records[call.message.chat.id][0][1] + ' | ' + self.mtg_records[call.message.chat.id][0][4] + ' | ' + str(self.mtg_records[call.message.chat.id][0][5])+ '\n----------\n' 
 						else:
 							self.rez[call.message.chat.id] += self.mtg_records[call.message.chat.id][0][0] + ' | ' + self.mtg_records[call.message.chat.id][0][1] + '\n' + self.mtg_records[call.message.chat.id][0][4] + ' | ' + str(self.mtg_records[call.message.chat.id][0][5])+ '\n----------\n'
