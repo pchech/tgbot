@@ -316,6 +316,6 @@ from
 						break
 				if len(self.mtg_records[call.message.chat.id]) == 0:
 					self.type_flag[call.message.chat.id] = False
-					self.bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=self.rez[message.chat.id])
+					self.bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=self.rez[call.message.chat.id])
 				else:
-					self.bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=self.rez[message.chat.id], reply_markup = keyboard)
+					self.bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=self.rez[call.message.chat.id], reply_markup = keyboard)
