@@ -276,7 +276,7 @@ from
 				for i in range (len(self.mtg_records[call.message.chat.id])):
 					if self.type_flag[call.message.chat.id] is False:
 						if self.mtg_records[message.chat.id][0][0] != self.mtg_records[call.message.chat.id][0][3]:
-							self.rez[call.message.chat.id] += self.mtg_records[call.message.chat.id][0][0] + '[' + self.mtg_records[call.message.chat.id][0][3] + ']' + '\n' + self.mtg_records[call.message.chat.id][0][1] + ' | ' + self.mtg_records[call.message.chat.id][0][4] + ' | ' + str(self.mtg_records[ca;;.message.chat.id][0][5])+ '\n----------\n' 
+							self.rez[call.message.chat.id] += self.mtg_records[call.message.chat.id][0][0] + '[' + self.mtg_records[call.message.chat.id][0][3] + ']' + '\n' + self.mtg_records[call.message.chat.id][0][1] + ' | ' + self.mtg_records[call.message.chat.id][0][4] + ' | ' + str(self.mtg_records[call.message.chat.id][0][5])+ '\n----------\n' 
 						else:
 							self.rez[call.message.chat.id] += self.mtg_records[call.message.chat.id][0][0] + ' | ' + self.mtg_records[call.message.chat.id][0][1] + '\n' + self.mtg_records[call.message.chat.id][0][4] + ' | ' + str(self.mtg_records[call.message.chat.id][0][5])+ '\n----------\n'
 					else:
