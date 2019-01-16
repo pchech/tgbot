@@ -218,8 +218,13 @@ from
 						  port = "5432",
 						  database="de7cvsaumikoei")
 			cursor = conn.cursor()
-			select_Query = """select distinct string_agg(c1.printed_name,'\\'),c1.color,c3.image,string_agg(c1.name,'\\'), s.set_id,cp.usd
-			from mtg.card_export c1, mtg.card_export c3,mtg.card_price cp, mtg.set s
+			select_Query = """select distinct string_agg(c1.printed_name,'\\'),c1.color,(select image
+ from mtg.card_export c4
+ where c4.name = c3.name
+ and c4.set_id = c3.set_id 
+ and c4.lang = 'en'
+ limit 1) image_en, string_agg(c1.name,'\\'), s.set_id,cp.usd
+			from mtg.card_export c1, mtg.set s, mtg.card_export c3,mtg.card_price cp
 			where c1.id in
 			(select c2.id
 			from mtg.card_export c2
@@ -229,11 +234,13 @@ from
 			and c3.lang = 'en'
 			and c1.set_id = c3.set_id
 			and c3.id=cp.id
-			and cast(c1.set_id as integer) = s.id
-			and c1.set_id = (select max(c4.set_id)
-			from mtg.card_export c4
-			where c4.name = c1.name)
-			group by c1.id,c1.color,c3.image, s.set_id,cp.usd
+			and s.id = cast(c1.set_id as integer)
+			and s.set_num = (select max(s1.set_num)
+							from mtg.card_export ce, mtg.set s1
+							where cast(ce.set_id as integer)=s1.id
+							and ce.name = c1.name
+							)
+			group by c1.id,c1.color, s.set_id,image_en,cp.usd
 			order by c1.color,cp.usd desc"""
 			cursor.execute(select_Query, dict(like= '%'+message.text.replace(',','')+'%'))
 			self.mtg_records[message.chat.id] = cursor.fetchall()
