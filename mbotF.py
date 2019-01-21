@@ -21,11 +21,16 @@ WEBHOOK_URL_PATH = "/%s/" % (token)
 
 bot = telebot.TeleBot(token)
 
-welcome_message="""Бот обладает следующими возможностями:
-/filter - Применить один из 5 фильтров (черно-белое фото, сепия, негатив, наложение шума, изменение яркости)
-/colorize - Окраска черно-белых изображений
-/change_color - Уменьшение количества цветов
-/start – Показать список доступных команд"""
+welcome_message="""Боту можно отправить название карты ( на русском или английском)
+Бот пришлет изображения, если совпадений не больше 2
+В противном случае бот пришлет список карт
+Для указания произвольных символов используйте %
+Команда mtgadvancemode позволяет осуществлять поиск карт, используя выбранные фильтры
+Доступные фильтры:
+Color (R,G,B,U,W,N)
+Type
+Edition (rna,grn,m19,dom,rix,xln,emn,bfz и т.д.)
+Rarity (common, uncommon, rare,mythic)"""
 mtgfinder = MtgFinder(bot)
 filt=Filter(bot)
 coloriz=Colorizer(bot,os.environ.get('ALGO_KEY'),'MyCollection')
