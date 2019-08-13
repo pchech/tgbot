@@ -251,7 +251,7 @@ from
 				for row in self.mtg_records[message.chat.id]:
 					self.bot.send_photo(message.chat.id,bytes(row[2]))
 					#self.bot.send_message(message.chat.id, 'TCG Price:' + str(row[5]))
-					self.bot.send_message(message.chat.id, self.scg_search(message.text))
+					self.bot.send_message(message.chat.id, self.scg_search(row[3]))
 			else:
 				self.print_card_list(message)
 		finally:
