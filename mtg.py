@@ -175,11 +175,11 @@ from
 	def card_search_advance(self,message):
 		self.type_flag[message.chat.id] = True
 		try:
-			conn=psycopg2.connect(user = "ptefqjhdtyrgya",
-						  password = "d06f1f573d5919c73c80143e18ea9883e1760412d455a00b901b67f5ac40fcd8",
-						  host = "ec2-54-247-161-208.eu-west-1.compute.amazonaws.com",
-						  port = "5432",
-						  database="de7cvsaumikoei")
+			conn=psycopg2.connect(user = os.environ.get('DB_USER'),
+						  password = os.environ.get('DB_PASS'),
+						  host = os.environ.get('DB_HOST'),
+						  port = os.environ.get('DB_PORT'),
+						  database=os.environ.get('DB_NAME'))
 			cursor = conn.cursor()
 			cursor.execute(self.session[message.chat.id])
 			self.mtg_records[message.chat.id] = cursor.fetchall()
@@ -212,11 +212,11 @@ from
 	def card_search(self,message):
 		self.type_flag[message.chat.id] = False
 		try:
-			conn=psycopg2.connect(user = "ptefqjhdtyrgya",
-						  password = "d06f1f573d5919c73c80143e18ea9883e1760412d455a00b901b67f5ac40fcd8",
-						  host = "ec2-54-247-161-208.eu-west-1.compute.amazonaws.com",
-						  port = "5432",
-						  database="de7cvsaumikoei")
+			conn=psycopg2.connect(user = os.environ.get('DB_USER'),
+						  password = os.environ.get('DB_PASS'),
+						  host = os.environ.get('DB_HOST'),
+						  port = os.environ.get('DB_PORT'),
+						  database=os.environ.get('DB_NAME'))
 			cursor = conn.cursor()
 			select_Query = """select distinct string_agg(c1.printed_name,'\\'),c1.color,(select image
  from mtg.card_export c4
