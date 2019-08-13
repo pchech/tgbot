@@ -288,7 +288,7 @@ from
 		bs = BeautifulSoup(rsp.content,'html.parser')
 		rs = bs.findAll(attrs={'class':['deckdbbody_row','deckdbbody2_row']})
 		if len(rs) != 0:
-			result = 'Edition | Price'
+			result = 'Edition | Price \n'
 			for row in rs:
 				try:
 					edition = row.findNext(class_='search_results_2').a.string
