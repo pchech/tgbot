@@ -19,7 +19,7 @@ class MtgFinder:
 	change=1
 	select = """select string_agg(nat_name,'||' order by nat_name) card_name,color,set_id,usd
 from
-(select string_agg(c1.printed_name,'\\' order by c1.name) nat_name,c1.color,c3.image,string_agg(c1.name,'\\' order by c1.name) en_name, s.set_id,cp.usd
+(select string_agg(c1.printed_name,' // ' order by c1.name) nat_name,c1.color,c3.image,string_agg(c1.name,' // ' order by c1.name) en_name, s.set_id,cp.usd
 			from mtg.card_export c1, mtg.card_export c3,mtg.card_price cp, mtg.set s
 			where 1=1
 			and c1.name = c3.name
@@ -219,12 +219,12 @@ from
 						  port = os.environ.get('DB_PORT'),
 						  database=os.environ.get('DB_NAME'))
 			cursor = conn.cursor()
-			select_Query = """select distinct string_agg(c1.printed_name,'\\'),c1.color,(select image
+			select_Query = """select distinct string_agg(c1.printed_name,' // '),c1.color,(select image
  from mtg.card_export c4
  where c4.name = c3.name
  and c4.set_id = c3.set_id 
  and c4.lang = 'en'
- limit 1) image_en, string_agg(c1.name,'\\'), s.set_id,cp.usd
+ limit 1) image_en, string_agg(c1.name,' // '), s.set_id,cp.usd
 			from mtg.card_export c1, mtg.set s, mtg.card_export c3,mtg.card_price cp
 			where c1.id in
 			(select c2.id
