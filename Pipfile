@@ -16,6 +16,7 @@ numpy = "==1.15"
 scipy = "*"
 psycopg2 = "*"
 apscheduler = "*"
+beautifulsoup4 = "*"
 
 [dev-packages]
 

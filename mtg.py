@@ -3,6 +3,7 @@ import json
 import psycopg2
 import telebot
 import os
+from bs4 import BeautifulSoup
 class MtgFinder:
 	session = {}
 	rez = {}
@@ -249,7 +250,7 @@ from
 			elif cursor.rowcount < 3:
 				for row in self.mtg_records[message.chat.id]:
 					self.bot.send_photo(message.chat.id,bytes(row[2]))
-					self.bot.send_message(message.chat.id, 'TCG Price:' + str(row[5]))
+					#self.bot.send_message(message.chat.id, 'TCG Price:' + str(row[5]))
 			else:
 				self.print_card_list(message)
 		finally:
@@ -280,6 +281,24 @@ from
 #            else:
 #                rez='\n'.join(data)
 #            bot.send_message(message.chat.id,rez)
+	def scg_search(card_name):
+		url = "http://www.starcitygames.com/results?name={}".format(card_name)
+		rsp = requests.get(url)
+		bs = BeautifulSoup(rsp.content,'html.parser')
+		rs = bs.findAll(attrs={'class':['deckdbbody_row','deckdbbody2_row']})
+		if len(rs) != 0:
+			result = 'Edition | Price'
+			for row in rs:
+				try:
+					edition = row.findNext(class_='search_results_2').a.string
+					price = row.findNext(class_='search_results_9').string
+					result += edition + ' | ' + price + '\n'
+				except AttributeError:
+					pass
+		else:
+			result = 'Not Found'
+		return result
+
 	def print_card_list(self,message):
 		keyboard = telebot.types.InlineKeyboardMarkup()
 		callback_button = telebot.types.InlineKeyboardButton(text="Показать следующую страницу", callback_data="next")
