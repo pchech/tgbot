@@ -299,7 +299,7 @@ from
 #                rez='\n'.join(data)
 #            bot.send_message(message.chat.id,rez)
 	def scg_search(self,card_name):
-		url = "http://www.starcitygames.com/results?name={}".format(card_name)
+		url = "http://www.starcitygames.com/results?name={}&numpage=100".format(card_name)
 		rsp = requests.get(url)
 		bs = BeautifulSoup(rsp.content,'html.parser')
 		rs = bs.findAll(attrs={'class':['deckdbbody_row','deckdbbody2_row']})
