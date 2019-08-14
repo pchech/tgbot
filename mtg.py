@@ -51,7 +51,8 @@ from
 			cursor = conn.cursor()
 			select_Query = """select set_name from mtg.set"""
 			cursor.execute(select_Query)
-			self.set_list = cursor.fetchall()
+			self.set_list = [set[0] for set in cursor.fetchall()]
+			print(self.set_list)
 		finally:
 			if (conn):
 				cursor.close()
