@@ -17,6 +17,7 @@ class MtgFinder:
 		'cmc':'cmc',
 		'rarity':'c1.rarity'}
 	change=1
+	set_list = []
 	select = """select string_agg(nat_name,'||' order by nat_name) card_name,color,set_id,usd
 from
 (select string_agg(c1.printed_name,' // ' order by c1.name) nat_name,c1.color,c3.image,string_agg(c1.name,' // ' order by c1.name) en_name, s.set_id,cp.usd
@@ -41,6 +42,20 @@ from
 	type_flag = {}
 	def __init__(self,bot):
 		self.bot=bot
+		try:
+			conn=psycopg2.connect(user = os.environ.get('DB_USER'),
+						  password = os.environ.get('DB_PASS'),
+						  host = os.environ.get('DB_HOST'),
+						  port = os.environ.get('DB_PORT'),
+						  database=os.environ.get('DB_NAME'))
+			cursor = conn.cursor()
+			select_Query = """select set_name from mtg.set"""
+			cursor.execute(select_Query)
+			self.set_list = cursor.fetchall()
+		finally:
+			if (conn):
+				cursor.close()
+				conn.close()
 		
 	def clear_param(self,chat_id):
 		#self.params={'q':''}
@@ -292,6 +307,8 @@ from
 			for row in rs:
 				try:
 					edition = row.findNext(class_='search_results_2').a.string
+					if edition not in self.set_list:
+						continue
 					price = row.findNext(class_='search_results_9').string
 					result += edition + ' | ' + price + '\n'
 				except AttributeError:
